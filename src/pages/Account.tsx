@@ -60,7 +60,7 @@ export default function Account() {
           <h3>⚖️ Today’s verdicts</h3>
           <div className="quota-row">
             <b>
-              {q.remaining} of {q.limit} left
+              {`${q.remaining} of ${q.limit} left`}
             </b>
             <span>{resetsIn(q.resetAt)}</span>
           </div>

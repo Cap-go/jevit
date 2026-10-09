@@ -7,6 +7,7 @@ import { useQuota } from '../../lib/useQuota'
 import { CONTEXT_CHIPS } from '../../lib/examples'
 import { resetsIn } from '../../lib/time'
 import { tap, thud } from '../../lib/haptics'
+import { tr } from '../../lib/i18n'
 
 // Step 3: optional background the screenshots don't show, then judge.
 export default function Context() {
@@ -28,7 +29,8 @@ export default function Context() {
   const addChip = (chip: string) => {
     void tap()
     const c = context.trim()
-    setContext(c ? `${c.replace(/[.\s]*$/, '')}. ${chip}.` : `${chip}.`)
+    const said = tr(chip)
+    setContext(c ? `${c.replace(/[.\s]*$/, '')}. ${said}.` : `${said}.`)
   }
 
   const judge = () => {
@@ -65,7 +67,7 @@ export default function Context() {
       </div>
 
       <div className="step-body">
-        <p className="asked-chip">“{caseFile.question}”</p>
+        <p className="asked-chip" translate="no">“{caseFile.question}”</p>
         <textarea
           className="context-box"
           rows={4}

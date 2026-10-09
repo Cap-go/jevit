@@ -1,4 +1,4 @@
-// Store-screenshot demo states. Only active in mock builds: /?demo=home|ask|judging|verdict|green|report|share|welcome
+// Store-screenshot demo states. Only active in mock builds: /?demo=home|ask|judging|verdict|green|report|share|welcome, or a path (/?demo=/how)
 import { caseFile, newId } from './store'
 import { toEvidenceImage } from './images'
 import { CapacitorPersistentAccount } from '@capgo/capacitor-persistent-account'
@@ -32,5 +32,5 @@ export async function setupDemo(): Promise<void> {
     caseFile.evidence = [{ id: newId(), kind: 'image', ...img }]
     caseFile.question = demo === 'green' || demo === 'share' ? 'Who’s right, me or him?' : 'Is he cheating?'
   }
-  history.replaceState({}, '', ROUTES[demo] ?? '/')
+  history.replaceState({}, '', ROUTES[demo] ?? (demo.startsWith('/') ? demo : '/'))
 }

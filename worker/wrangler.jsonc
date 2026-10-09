@@ -12,6 +12,8 @@
   "observability": { "enabled": true },
   // Workers AI: Clef decision models (@cf/cloudflare/clef, @cf/cloudflare/clef-flash)
   "ai": { "binding": "AI" },
+  // jevit-i18n: translates questions typed in other languages to English before Clef reads them
+  "services": [{ "binding": "I18N", "service": "jevit-i18n" }],
   // Per-account daily verdict quota + ban flag
   "durable_objects": { "bindings": [{ "name": "QUOTA", "class_name": "Quota" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Quota"] }],

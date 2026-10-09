@@ -2,6 +2,7 @@ import { caseFile } from './store'
 import { fitForClef } from './images'
 import { currentToken, getSession, signOut, type Quota, type SessionData } from './auth'
 import type { RemoteCheck, Verdict } from './types'
+import { lang, prime } from './i18n'
 
 const JUDGE_URL = import.meta.env.VITE_JUDGE_URL ?? 'http://localhost:8787'
 const MOCK = import.meta.env.VITE_MOCK === '1'
@@ -62,17 +63,31 @@ export async function deleteAccount(): Promise<void> {
 // Clef-flash classifies the question as the user types.
 export async function checkQuestionRemote(question: string, signal?: AbortSignal): Promise<RemoteCheck> {
   if (MOCK) return (await import('./mock')).mockCheck(question)
-  return (await call<{ check: RemoteCheck }>('POST', '/v1/check', { question }, signal)).check
+  return (await call<{ check: RemoteCheck }>('POST', '/v1/check', { question, lang }, signal)).check
 }
 
 export async function requestVerdict(question: string, signal?: AbortSignal): Promise<Verdict> {
-  if (MOCK) return (await import('./mock')).mockVerdict(question)
+  if (MOCK) {
+    const verdict = await (await import('./mock')).mockVerdict(question)
+    await prime(textsOf(verdict))
+    return verdict
+  }
   const images = await fitForClef(
     caseFile.evidence.flatMap((e) => (e.kind === 'image' ? [{ mediaType: e.mediaType, data: e.data }] : [])),
   )
   const texts = caseFile.evidence.flatMap((e) => (e.kind === 'text' ? [e.text] : []))
   const context = caseFile.context.trim() || undefined
-  const { verdict } = await call<{ verdict?: Verdict }>('POST', '/v1/judge', { question, context, images, texts }, signal)
+  const { verdict } = await call<{ verdict?: Verdict }>('POST', '/v1/judge', { question, context, images, texts, lang }, signal)
   if (!verdict) throw new JudgeFailure('Something went wrong. Try again.')
+  await prime(textsOf(verdict))
   return verdict
+}
+
+// Every human-readable string in a verdict, so it can be translated before the reveal.
+function textsOf(value: unknown): string[] {
+  if (typeof value === 'string') return [value]
+  if (Array.isArray(value)) return value.flatMap(textsOf)
+  if (value && typeof value === 'object')
+    return Object.entries(value).flatMap(([k, v]) => (['id', 'emoji', 'vibe', 'kind'].includes(k) ? [] : textsOf(v)))
+  return []
 }

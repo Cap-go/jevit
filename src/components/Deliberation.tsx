@@ -38,14 +38,14 @@ export default function Deliberation({
       <h2 className="judging-title">
         Jevit is judging<span className="dots"><i>.</i><i>.</i><i>.</i></span>
       </h2>
-      <p className="judging-q">“{question}”</p>
+      <p className="judging-q" translate="no">“{question}”</p>
 
       <div className="bench">
         <Gavel className="gavel" />
         <div className="pile">
           {pile.map((e, i) => (
             <div key={e.id} className={`pile-card pile-${i}`}>
-              {e.kind === 'image' ? <img src={e.preview} alt="" /> : <p>{e.text}</p>}
+              {e.kind === 'image' ? <img src={e.preview} alt="" /> : <p translate="no">{e.text}</p>}
             </div>
           ))}
           <div className="scanline" />

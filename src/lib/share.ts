@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import { Share } from '@capacitor/share'
 import { Directory, Filesystem } from '@capacitor/filesystem'
 import type { Verdict } from './types'
+import { prime, tr, tx } from './i18n'
 
 // Story-sized verdict card (1080x1920) drawn on a canvas, then handed to the native share sheet.
 
@@ -23,11 +24,14 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number): string[] {
-  const words = text.split(/\s+/)
+  // Languages written without spaces (Chinese, Japanese, Thai…) wrap per character.
+  const spaced = /\s/.test(text.trim()) || ctx.measureText(text).width <= maxWidth
+  const words = spaced ? text.split(/\s+/) : [...text]
+  const sep = spaced ? ' ' : ''
   const lines: string[] = []
   let line = ''
   for (const w of words) {
-    const test = line ? `${line} ${w}` : w
+    const test = line ? `${line}${sep}${w}` : w
     if (ctx.measureText(test).width > maxWidth && line) {
       lines.push(line)
       line = w
@@ -35,8 +39,8 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, max
     } else line = test
   }
   if (lines.length < maxLines && line) lines.push(line)
-  if (lines.length === maxLines && words.join(' ') !== lines.join(' ')) {
-    lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, '…')
+  if (lines.length === maxLines && words.join(sep) !== lines.join(sep)) {
+    lines[maxLines - 1] = spaced ? lines[maxLines - 1].replace(/\s*\S*$/, '…') : `${lines[maxLines - 1].slice(0, -1)}…`
   }
   return lines
 }
@@ -46,8 +50,11 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.roundRect(x, y, w, h, r)
 }
 
+const CARD_TEXT = ['Jevit says', 'How sure', 'Think you’re right? Get judged ⚖️ jevit.fun', 'I asked Jevit:', 'Verdict:']
+
 export async function renderVerdictCard(v: Verdict, question: string): Promise<Blob> {
-  await document.fonts.ready
+  const flagLabels = [...v.red_flags, ...v.green_flags].map((f) => f.label)
+  await Promise.all([document.fonts.ready, prime([...CARD_TEXT, v.verdict_label, v.headline, ...flagLabels])])
   const canvas = document.createElement('canvas')
   canvas.width = W
   canvas.height = H
@@ -77,7 +84,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   ctx.fillStyle = '#d7ff3a'
   ctx.font = `750 36px ${FONT}`
   ctx.textAlign = 'right'
-  ctx.fillText('Jevit says', W - 90, 172)
+  ctx.fillText(tr('Jevit says'), W - 90, 172)
   ctx.textAlign = 'center'
 
   // Question
@@ -105,7 +112,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   roundRect(ctx, -tw / 2 - padX, -boxH / 2, tw + padX * 2, boxH, size * 0.3)
   ctx.stroke()
   ctx.fillStyle = color
-  ctx.fillText(v.verdict_label, 0, size * 0.04)
+  ctx.fillText(tr(v.verdict_label), 0, size * 0.04)
   ctx.restore()
 
   // Confidence meter
@@ -113,7 +120,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   ctx.font = `700 40px ${FONT}`
   ctx.fillStyle = 'rgba(255,246,251,0.7)'
   ctx.textAlign = 'left'
-  ctx.fillText('How sure', 140, my)
+  ctx.fillText(tr('How sure'), 140, my)
   ctx.textAlign = 'right'
   ctx.fillStyle = '#fff'
   ctx.font = `800 52px ${FONT}`
@@ -129,7 +136,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   ctx.textAlign = 'center'
   ctx.fillStyle = '#fff'
   ctx.font = `800 62px ${FONT}`
-  wrap(ctx, v.headline, W - 180, 3).forEach((l, i) => ctx.fillText(l, W / 2, 1250 + i * 78))
+  wrap(ctx, tr(v.headline), W - 180, 3).forEach((l, i) => ctx.fillText(l, W / 2, 1250 + i * 78))
 
   // Top flags
   const flags = [...v.red_flags.map((f) => ({ ...f, c: '#ff4d5e' })), ...v.green_flags.map((f) => ({ ...f, c: '#3dffa2' }))]
@@ -138,7 +145,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   ctx.font = `700 40px ${FONT}`
   let fy = 1520
   for (const f of flags) {
-    const label = `${f.emoji} ${f.label} ${Math.round(f.p * 100)}%`
+    const label = `${f.emoji} ${tr(f.label)} ${Math.round(f.p * 100)}%`
     const w = ctx.measureText(label).width + 64
     ctx.fillStyle = `${f.c}22`
     roundRect(ctx, (W - w) / 2, fy - 38, w, 76, 38)
@@ -154,7 +161,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   // Footer CTA
   ctx.fillStyle = 'rgba(255,246,251,0.55)'
   ctx.font = `650 36px ${FONT}`
-  ctx.fillText('Think you’re right? Get judged ⚖️ jevit.fun', W / 2, H - 90)
+  ctx.fillText(tr('Think you’re right? Get judged ⚖️ jevit.fun'), W / 2, H - 90)
 
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('render failed'))), 'image/png'))
 }
@@ -168,7 +175,7 @@ const blobToBase64 = (blob: Blob) =>
   })
 
 export function verdictText(v: Verdict, question: string): string {
-  return `⚖️ I asked Jevit: “${question}”\nVerdict: ${v.verdict_label} (${v.confidence}% sure)\n“${v.headline}”\nGet judged → ${SHARE_URL}`
+  return `⚖️ ${tr('I asked Jevit:')} “${question}”\n${tr('Verdict:')} ${tr(v.verdict_label)} (${tr('How sure')}: ${v.confidence}%)\n“${tr(v.headline)}”\n→ ${SHARE_URL}`
 }
 
 /** Share the verdict card image + caption. Returns false if the user cancelled. */
@@ -181,7 +188,7 @@ export async function shareVerdict(v: Verdict, question: string, card: Blob): Pr
         data: await blobToBase64(card),
         directory: Directory.Cache,
       })
-      await Share.share({ text, files: [uri], dialogTitle: 'Share the verdict' })
+      await Share.share({ text, files: [uri], dialogTitle: await tx('Share the verdict') })
       return true
     }
     const file = new File([card], 'jevit-verdict.png', { type: 'image/png' })
@@ -202,9 +209,12 @@ export async function shareVerdict(v: Verdict, question: string, card: Blob): Pr
 }
 
 export async function shareApp(): Promise<void> {
-  const text = 'Jevit judges your chats: is he cheating, am I wrong, is she into me? Get judged ⚖️'
+  const [text, dialogTitle] = await Promise.all([
+    tx('Jevit judges your chats: is he cheating, am I wrong, is she into me? Get judged ⚖️'),
+    tx('Invite friends'),
+  ])
   try {
-    await Share.share({ title: 'Jevit', text, url: SHARE_URL, dialogTitle: 'Invite friends' })
+    await Share.share({ title: 'Jevit', text, url: SHARE_URL, dialogTitle })
   } catch {
     await navigator.clipboard?.writeText(`${text} ${SHARE_URL}`).catch(() => {})
   }

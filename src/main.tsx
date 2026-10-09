@@ -10,6 +10,7 @@ import App from './App'
 import { getSession, warmUpAuth } from './lib/auth'
 import { setupDemo } from './lib/demo'
 import { setupChrome } from './lib/chrome'
+import { setupI18n } from './lib/i18n'
 
 async function nativeBoot() {
   if (!Capacitor.isNativePlatform()) return
@@ -22,6 +23,7 @@ async function nativeBoot() {
 void nativeBoot().catch(() => undefined)
 
 initTransitions({ platform: 'auto' })
+await setupI18n().catch(() => undefined)
 await setupChrome().catch(() => undefined)
 warmUpAuth()
 void getSession()

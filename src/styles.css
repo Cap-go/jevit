@@ -2385,3 +2385,16 @@ cap-page[style*='visibility: hidden'] * {
 .case-progress .steps-bar {
   flex: 1;
 }
+
+/* ---------- translation ---------- */
+/* First launch in a new language: keep the screen blank until it's translated (max ~3.5s). */
+html.i18n-loading body {
+  visibility: hidden;
+}
+/* Text waiting for its translation stays invisible instead of flashing in English. */
+[data-i18n-wait] {
+  color: transparent !important;
+}
+html.i18n-rtl :is(p, h1, h2, h3, h4, li, label, button, a, .muted) {
+  unicode-bidi: plaintext;
+}

@@ -1,18 +1,19 @@
 # jevit
 
-Get judged. Upload screenshots, photos, or pasted chats, ask a question ("Is he cheating?", "Am I wrong here?", "Is she into me?"), and **JEV-1**, the first judge model in the Jev family, gives you a verdict with a gavel slam, a stamp, a confidence score, and a vibe report built from Clef decision probabilities.
+Get judged. Upload screenshots, photos, or pasted chats, ask a question ("Is he cheating?", "Am I wrong here?", "Is she into me?"), and Jevit's AI judge gives you a clear answer: a stamp, how sure it is, red and green flags, and advice, built from Clef decision probabilities. The app speaks the phone's language (see [Languages](#languages)).
 
 ```
-app (Capacitor + React) ──▶ Cloudflare Worker ──▶ Workers AI: Clef decision models
+app (Capacitor + React) ──▶ jevit-judge worker ──▶ Workers AI: Clef decision models
                               /v1/check  → @cf/cloudflare/clef-flash  (live, while typing)
                               /v1/judge  → @cf/cloudflare/clef        (vision, ~20 decisions)
+                    └──────▶ jevit-i18n worker  ──▶ Workers AI: Gemma 4 (translations, cached in KV)
 ```
 
-JEV-1 runs on [Clef](https://blog.cloudflare.com/clef-decision-models/), Cloudflare's open-source decision model. A decision model doesn't write text. It returns a probability for every allowed answer of typed questions (`noul` yes/no, `choice`, `score`). Jevit turns those probabilities into the verdict.
+Jevit runs on [Clef](https://blog.cloudflare.com/clef-decision-models/), Cloudflare's open-source decision model. A decision model doesn't write text. It returns a probability for every allowed answer of typed questions (`noul` yes/no, `choice`, `score`). Jevit turns those probabilities into the verdict.
 
 ## How it works
 
-1. **Receipts:** up to 4 images (Clef's limit, downscaled on device to 1568px JPEG) and/or pasted text.
+1. **Chat:** up to 4 images (Clef's limit, downscaled on device to 1568px JPEG) and/or pasted text.
 2. **Question check:** an instant on-device check, then `clef-flash` confirms it while you type (`worker/src/questionCheck.ts`). It works out:
    - is it judgeable (about people, feelings, or a conversation)?
    - what kind: yes/no becomes a `noul` question, who's right becomes a `choice` (you / them / both / nobody), a rating becomes a `score`, and open questions are rejected
@@ -27,7 +28,7 @@ JEV-1 runs on [Clef](https://blog.cloudflare.com/clef-decision-models/), Cloudfl
 
 1. **Onboarding:** 4 swipeable slides on first launch, then sign-in.
 2. **Home:** start a case or tap a sample question; invite friends.
-3. **New case:** receipts + live question check + daily quota.
+3. **New chat:** screenshots + live question check + daily quota.
 4. **Verdict:** deliberation animation, gavel slam, stamp, vibe report, flags, advice.
 5. **Share:** a 1080×1920 verdict card drawn on device, shared through the native share sheet (or copy the caption). Links go to `/get`, which sends phones to the right store.
 
@@ -40,7 +41,8 @@ Store listing kit (screenshots, graphics, metadata, upload scripts): see [`store
 - [`@capgo/capacitor-updater`](https://capgo.app) for live updates (`notifyAppReady` is called in `src/main.tsx`)
 - [`@capgo/capacitor-native-navigation`](https://github.com/Cap-go/capacitor-native-navigation) for the native top bar, Android back button, and safe-area insets (`src/lib/chrome.ts`; older native builds keep the web header)
 - `@capgo/capacitor-file-picker` (native multi-select photo picker), haptics, share, status-bar, splash-screen, app
-- Cloudflare Worker, Workers AI (Clef), optional AI Gateway, Workers rate limiting
+- Cloudflare Workers, Workers AI (Clef, Gemma 4), KV, optional AI Gateway, Workers rate limiting
+- `@capacitor/device` for the phone language (iOS WebViews only report the languages an app bundle declares)
 
 ## Develop
 
@@ -59,6 +61,16 @@ bun run dev
 # Smoke-test the Clef logic straight against the REST API
 cd worker && CLOUDFLARE_ACCOUNT_ID=<id> CLOUDFLARE_API_TOKEN=$(bunx wrangler auth token) bun scripts/smoke.ts [chat.png]
 ```
+
+## Languages
+
+The app only contains English. Everything else is translated at runtime, so it works in any language without shipping translation files.
+
+- `src/lib/i18n.ts` reads the phone language (`@capacitor/device`, falling back to `navigator.language`; `?lang=fr` forces one in dev). For anything but English, a `MutationObserver` translates every text node and the `placeholder`/`aria-label`/`title`/`alt` attributes as React renders them. Text waiting for its translation stays invisible instead of flashing in English, and the first launch in a new language waits up to 3.5s for the first screen.
+- Translations are kept in `localStorage` per language, so each string is fetched once per device. Strings outside the DOM (native bar titles, the share card, share texts) go through `tr()` / `tx()`. Verdicts are translated while the reveal animation plays (`prime()` in `src/lib/api.ts`).
+- Anything with `translate="no"` (pasted chats, the user's own question) is left alone. Right-to-left languages get per-paragraph text direction.
+- `translator/` is the `jevit-i18n` worker on `i18n.jevit.fun`: `POST /v1/translate {lang, texts}` → `{translations, complete}`. Each string is translated once per language with Gemma 4 (JSON-schema batches, brand names protected) and stored in KV forever; bump `CACHE_VERSION` to retranslate. Misses are rate limited to 30 requests/min per IP. `jevit-judge` calls it over RPC to turn questions typed in other languages into English before Clef reads them.
+- `bun scripts/warm-i18n.ts [langs…]` (with `VITE_MOCK=1 bunx vite --port 5173` running) reads every screen of the mock app and pre-translates it into the 26 most common languages, so the first user in a language doesn't wait.
 
 ## Accounts and rate limits
 

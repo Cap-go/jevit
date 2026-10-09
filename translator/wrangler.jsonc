@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jevit-i18n",
+  "account_id": "9ee3d7479a3c359681e3fab2c8cb22c0",
+  "main": "src/index.ts",
+  // Translates English app text (and user questions) into any language. Called by the app and by jevit-judge.
+  "routes": [{ "pattern": "i18n.jevit.fun", "custom_domain": true }],
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  // One entry per (cache version, language, text). Values never expire: bump CACHE_VERSION to retranslate.
+  "kv_namespaces": [{ "binding": "CACHE", "id": "41025a766105455f8cd740c8990bbf66" }],
+  "vars": {
+    "MODEL": "@cf/google/gemma-4-26b-a4b-it",
+    "CACHE_VERSION": "v3"
+  },
+  "ratelimits": [
+    // Requests per IP that need the model (cache hits are not limited)
+    { "name": "MISS_LIMITER", "namespace_id": "4210", "simple": { "limit": 30, "period": 60 } }
+  ]
+}

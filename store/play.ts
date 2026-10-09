@@ -1,5 +1,5 @@
 // Fills the Google Play listing for ee.forgr.jevit and uploads the AAB to the internal track (draft).
-// Auth: a Play-linked service account active in gcloud. Usage: bun store/play.ts [--no-bundle]
+// Auth: a Play-linked service account active in gcloud. Usage: bun store/play.ts [--no-bundle] [--production]
 import { $ } from 'bun'
 import { readdirSync } from 'node:fs'
 
@@ -58,12 +58,17 @@ await images('phoneScreenshots', shots.map((f) => `store/screenshots/android/${f
 if (withBundle) {
   const bundle = await call('POST', `${EU}/bundles?uploadType=media`, Bun.file(AAB), 'application/octet-stream')
   console.log('✓ bundle versionCode', bundle.versionCode)
-  // New apps only accept draft releases until the first review.
-  await call('PUT', `${E}/tracks/internal`, {
-    track: 'internal',
-    releases: [{ name: `${bundle.versionCode} (1.0)`, versionCodes: [String(bundle.versionCode)], status: 'draft' }],
-  })
-  console.log('✓ internal track draft release')
+  // --production: release to everyone (sent for review on commit). Default: internal draft (new apps only
+  // accept drafts until the first review).
+  const tracks = process.argv.includes('--production') ? ['internal', 'production'] : ['internal']
+  for (const track of tracks) {
+    const status = tracks.length > 1 ? 'completed' : 'draft'
+    await call('PUT', `${E}/tracks/${track}`, {
+      track,
+      releases: [{ name: `${bundle.versionCode} (${meta.version ?? '1.0'})`, versionCodes: [String(bundle.versionCode)], status }],
+    })
+    console.log(`✓ ${track} track ${status} release`)
+  }
 }
 
 await call('POST', `${E}:commit`)

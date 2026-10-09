@@ -12,6 +12,7 @@ import { demo } from '../lib/demo'
 import { caseFile } from '../lib/store'
 import { buzz, tap, thud } from '../lib/haptics'
 import type { Verdict } from '../lib/types'
+import { tr } from '../lib/i18n'
 
 const MIN_SUSPENSE_MS = demo ? 0 : 4200
 const SLAM_MS = demo ? 0 : 650
@@ -77,8 +78,8 @@ export default function VerdictPage() {
 
   const rejudge = (q: string) => {
     void tap()
-    caseFile.question = q
-    setQuestion(q)
+    caseFile.question = tr(q)
+    setQuestion(tr(q))
     setRun((r) => r + 1)
   }
 
@@ -132,7 +133,7 @@ export default function VerdictPage() {
         <div className="error-state pop-in">
           <div className="error-emoji">🌙</div>
           <h2>No more answers today</h2>
-          <p className="muted">You used all your free answers. More {resetsIn(phase.resetAt)}.</p>
+          <p className="muted">{`You used all your free answers (${resetsIn(phase.resetAt)}).`}</p>
           <button className="cta" onClick={() => navigate('/', { replace: true })}>
             Back home
           </button>
@@ -198,7 +199,7 @@ function Ruling({ verdict, question }: { verdict: Verdict; question: string }) {
         <>
           <p>{verdict.reasoning}</p>
           <p className="card-note">
-            Jevit checked {verdict.checks} things. It’s just for fun, not real advice.
+            {`Jevit checked ${verdict.checks} things. It’s just for fun, not real advice.`}
           </p>
         </>
       ),
@@ -292,7 +293,7 @@ function Ruling({ verdict, question }: { verdict: Verdict; question: string }) {
         </div>
       )}
 
-      <p className="asked">“{question}”</p>
+      <p className="asked" translate="no">“{question}”</p>
       <Stamp label={verdict.verdict_label} vibe={verdict.vibe} max={58} />
 
       <div className="confidence reveal-1">

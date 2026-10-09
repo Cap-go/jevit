@@ -29,7 +29,8 @@ export function checkQuestion(raw: string): QuestionCheck {
       suggestion: 'Is this a red flag?',
     }
   }
-  if (q.endsWith('?')) return { state: 'ok', kind: 'yes_no', hint: 'Looks good' }
+  // Any language: ?, full-width ？ (Chinese, Japanese) and Arabic ؟ all count.
+  if (/[?？؟]$/.test(q)) return { state: 'ok', kind: 'yes_no', hint: 'Looks good' }
   return { state: 'weak', hint: "That's not a question yet — end it with a ?", suggestion: `${q.replace(/[.!]+$/, '')}?` }
 }
 

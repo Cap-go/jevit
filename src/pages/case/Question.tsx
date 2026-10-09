@@ -9,6 +9,7 @@ import { caseFile } from '../../lib/store'
 import { useQuota } from '../../lib/useQuota'
 import { tap } from '../../lib/haptics'
 import type { RemoteCheck } from '../../lib/types'
+import { tr } from '../../lib/i18n'
 
 // Step 2: the question, checked on device instantly and by clef-flash after a short pause.
 export default function Question() {
@@ -94,7 +95,7 @@ export default function Question() {
           <span>{check.state === 'ok' ? '✓' : check.state === 'weak' ? '!' : '?'}</span>
           {check.hint}
           {check.state === 'weak' && (
-            <button className="fix-btn" onClick={() => setQ(check.suggestion)}>
+            <button className="fix-btn" onClick={() => setQ(tr(check.suggestion))}>
               Try “{check.suggestion}”
             </button>
           )}
@@ -102,7 +103,7 @@ export default function Question() {
 
         <div className="chips wrap compact">
           {STARTER_QUESTIONS.slice(0, 6).map((q) => (
-            <button key={q} className={`chip ${q === question ? 'active' : ''}`} onClick={() => (tap(), setQ(q))}>
+            <button key={q} className={`chip ${tr(q) === question ? 'active' : ''}`} onClick={() => (tap(), setQ(tr(q)))}>
               {q}
             </button>
           ))}
@@ -116,8 +117,8 @@ export default function Question() {
         <IdeasSheet
           onClose={() => setIdeas(false)}
           onPick={(e) => {
-            setQ(e.q)
-            if (!caseFile.context.trim()) caseFile.context = e.context
+            setQ(tr(e.q))
+            if (!caseFile.context.trim()) caseFile.context = tr(e.context)
             setIdeas(false)
           }}
         />

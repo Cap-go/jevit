@@ -23,10 +23,12 @@ export interface Env {
   AUTH_LIMITER?: RateLimit;
   JUDGE_LIMITER?: RateLimit;
   CHECK_LIMITER?: RateLimit;
+  // jevit-i18n (service binding, RPC)
+  I18N?: { translate(lang: string, texts: string[]): Promise<{ translations: string[] }> };
 }
 
 type ImageInput = { mediaType: string; data: string };
-type JudgeRequest = { question: string; context?: string; texts: string[]; images: ImageInput[] };
+type JudgeRequest = { question: string; context?: string; texts: string[]; images: ImageInput[]; lang?: unknown };
 
 const MAX_IMAGE_B64 = 5_500_000; // Clef limit: 4 MiB decoded per image
 const MAX_TOTAL_B64 = 10_900_000; // Clef limit: 8 MiB decoded total
@@ -82,7 +84,18 @@ function validate(body: unknown): JudgeRequest | string {
     total += img.data.length;
   }
   if (total > MAX_TOTAL_B64) return "Screenshots are too large together";
-  return { question: question.trim(), context: context?.trim() || undefined, texts, images };
+  return { question: question.trim(), context: context?.trim() || undefined, texts, images, lang: (body as JudgeRequest).lang };
+}
+
+// Clef reads English best: a question or context typed in another language is translated first (cached by jevit-i18n).
+async function toEnglish(env: Env, lang: unknown, texts: string[]): Promise<string[]> {
+  if (!env.I18N || typeof lang !== "string" || /^en\b/i.test(lang) || texts.length === 0) return texts;
+  try {
+    return (await env.I18N.translate("en", texts)).translations;
+  } catch (err) {
+    console.warn("toEnglish failed", err);
+    return texts;
+  }
 }
 
 async function limited(limiter: RateLimit | undefined, key: string): Promise<boolean> {
@@ -224,11 +237,12 @@ export default {
       if (route === "POST /v1/check") {
         if (await limited(env.CHECK_LIMITER, key)) return json({ error: "Slow down" }, 429, origin);
         if ((await stub.status(limit)).banned) return json({ error: "This account is suspended.", code: "banned" }, 403, origin);
-        const question = ((await request.json().catch(() => null)) as { question?: unknown } | null)?.question;
-        const err = validateQuestion(question);
+        const body = (await request.json().catch(() => null)) as { question?: unknown; lang?: unknown } | null;
+        const err = validateQuestion(body?.question);
         if (err) return json({ error: err }, 400, origin);
         const gateway = env.AI_GATEWAY_ID || undefined;
-        return json({ check: await checkQuestion(env.AI, (question as string).trim(), gateway) }, 200, origin);
+        const [question] = await toEnglish(env, body?.lang, [(body!.question as string).trim()]);
+        return json({ check: await checkQuestion(env.AI, question, gateway) }, 200, origin);
       }
 
       if (route === "POST /v1/judge") {
@@ -251,6 +265,9 @@ export default {
 
         const gateway = env.AI_GATEWAY_ID || undefined;
         try {
+          const [question, context] = await toEnglish(env, parsed.lang, [parsed.question, ...(parsed.context ? [parsed.context] : [])]);
+          parsed.question = question;
+          parsed.context = context;
           const check = await checkQuestion(env.AI, parsed.question, gateway);
           if (!check.ok) {
             await stub.refund(); // a rejected question doesn't cost a verdict

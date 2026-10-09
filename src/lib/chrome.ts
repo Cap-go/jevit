@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core'
 import { NativeNavigation } from '@capgo/capacitor-native-navigation'
+import { tr, tx } from './i18n'
 
 // Native chrome: on builds that ship @capgo/capacitor-native-navigation the top bar is a real
 // UIKit / Android Toolbar and the plugin writes safe-area insets as CSS variables (fixes Android
@@ -42,11 +43,21 @@ export async function setupChrome() {
 export function showChrome(chrome: Chrome) {
   current = chrome
   if (!nativeChrome) return
+  // Native titles never reach the DOM, so translate them here (instantly when already known).
+  const title = chrome.title?.trim() ?? ''
+  setBar(chrome, tr(title), chrome.subtitle && tr(chrome.subtitle))
+  if (title && tr(title) === title)
+    void tx(title).then((t) => {
+      if (current === chrome && t !== title) setBar(chrome, t, chrome.subtitle && tr(chrome.subtitle))
+    })
+}
+
+function setBar(chrome: Chrome, title: string, subtitle?: string) {
   const hasBar = chrome.title !== undefined || chrome.onBack !== undefined
   void NativeNavigation.setNavbar({
     hidden: !hasBar,
-    title: chrome.title?.trim() ?? '',
-    subtitle: chrome.subtitle,
+    title,
+    subtitle,
     transparent: true,
     // Android has a native back arrow; iOS gets a chevron item (the text back button would be empty).
     backButton: { visible: isAndroid && !!chrome.onBack },

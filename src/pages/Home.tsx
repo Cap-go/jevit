@@ -7,6 +7,7 @@ import { caseFile } from '../lib/store'
 import { tap } from '../lib/haptics'
 import { getSession } from '../lib/auth'
 import { shareApp } from '../lib/share'
+import { tr } from '../lib/i18n'
 
 const STAMPS = [
   { t: 'YES 💅', c: 'green' },
@@ -24,7 +25,7 @@ export default function Home() {
 
   const start = async (question?: string) => {
     void tap()
-    if (question) caseFile.question = question
+    if (question) caseFile.question = tr(question)
     setDirection('forward')
     navigate((await getSession()) ? '/case/receipts' : '/login?next=/case/receipts')
   }

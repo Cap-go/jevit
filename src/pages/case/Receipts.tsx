@@ -134,14 +134,14 @@ export default function Receipts() {
           <button className="dropzone" onClick={pickScreenshots}>
             <span className="dz-icon">🖼️</span>
             <b>Add screenshots</b>
-            <span>Pick up to {MAX_IMAGES} at once</span>
+            <span>{`Pick up to ${MAX_IMAGES} at once`}</span>
           </button>
         ) : (
           <div className="slots">
             {slots.map((e, i) =>
               e ? (
                 <div key={e.id} className="slot filled pop-in">
-                  {e.kind === 'image' ? <img src={e.preview} alt="" /> : <p>{e.text}</p>}
+                  {e.kind === 'image' ? <img src={e.preview} alt="" /> : <p translate="no">{e.text}</p>}
                   <button
                     className="remove"
                     aria-label="Remove"

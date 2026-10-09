@@ -7,7 +7,7 @@ export default function AppCredits() {
     <div className="credits">
       <LogoMark size={44} />
       <p className="credits-version">
-        Jevit {APP_VERSION}
+        {`Jevit ${APP_VERSION}`}
         {bundle && <span> · {bundle}</span>}
       </p>
       <p className="credits-note">Built with Capacitor and shipped with Capgo live updates.</p>
