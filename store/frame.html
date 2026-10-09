@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Store screenshot frame (dev only): /store/frame.html?demo=verdict&t=Title&s=Subtitle at any window size. -->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/node_modules/@fontsource-variable/bricolage-grotesque/index.css">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:100vw;height:100vh;overflow:hidden;background:#14051f;font-family:'Bricolage Grotesque Variable',system-ui;color:#fff}
+.bg{position:absolute;inset:0;background:radial-gradient(70% 45% at 15% 8%,#ff3d8b66,transparent),radial-gradient(70% 45% at 95% 40%,#5b2cff77,transparent),radial-gradient(60% 40% at 30% 100%,#b026ff55,transparent),#14051f}
+.cap{position:absolute;left:0;right:0;text-align:center;padding:0 6vw}
+.t{font-weight:800;letter-spacing:-.03em;line-height:1.02}
+.t em{font-style:normal;color:#d7ff3a}
+.s{margin-top:.6em;color:rgba(255,246,251,.72);font-weight:600}
+.phone{position:absolute;left:50%;transform:translateX(-50%);background:#0b0b0f;box-shadow:0 0 0 3px #2a2a33,0 60px 120px rgba(0,0,0,.6)}
+.screen{position:absolute;overflow:hidden;background:#1d0830}
+.sb{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-family:-apple-system,system-ui;color:#fff}
+.island{position:absolute;left:50%;transform:translateX(-50%);background:#000;border-radius:999px}
+iframe{border:0;position:absolute;left:0;transform-origin:0 0;background:#14051f}
+</style></head><body>
+<div class="bg"></div>
+<div class="cap"><div class="t" id="t"></div><div class="s" id="s"></div></div>
+<div class="phone" id="phone"><div class="screen" id="screen">
+  <div class="sb" id="sb"><span>9:41</span><span><svg height="0.75em" viewBox="0 0 54 14" fill="#fff"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/><path d="M28 4.5a10 10 0 0 1 13 0l-1.6 1.7a7.6 7.6 0 0 0-9.8 0zM30.6 7.4a6 6 0 0 1 7.8 0l-1.7 1.7a3.6 3.6 0 0 0-4.4 0zM34.5 13l2-2.2a1.3 1.3 0 0 0-4 0z"/><rect x="45" y="2" width="9" height="10" rx="2.5" fill="none" stroke="#fff" stroke-width="1.2" opacity=".5"/><rect x="46.5" y="3.5" width="6" height="7" rx="1.5"/></svg></span></div><div class="island" id="island"></div>
+  <iframe id="app"></iframe></div></div>
+<script>
+const q = new URLSearchParams(location.search)
+const W = innerWidth, H = innerHeight
+document.getElementById('t').innerHTML = q.get('t') || ''
+document.getElementById('s').textContent = q.get('s') || ''
+const cap = document.querySelector('.cap'), t = document.getElementById('t'), s = document.getElementById('s')
+t.style.fontSize = W * 0.083 + 'px'; s.style.fontSize = W * 0.038 + 'px'; cap.style.top = H * 0.045 + 'px'
+// Phone sized to fill the space under the caption, bleeding slightly off the bottom.
+const DW = 390, DH = 844, SB = 47
+const phoneTop = H * 0.175
+const scale = Math.min((W * 0.78) / DW, (H - phoneTop - H * 0.035) / DH)
+const bezel = 14 * scale
+const pw = DW * scale + bezel * 2, ph = DH * scale + bezel * 2
+const phone = document.getElementById('phone')
+Object.assign(phone.style, { width: pw + 'px', height: ph + 'px', top: phoneTop + "px", borderRadius: 62 * scale + 'px' })
+Object.assign(document.getElementById('screen').style, { left: bezel + 'px', top: bezel + 'px', width: DW * scale + 'px', height: DH * scale + 'px', borderRadius: 50 * scale + 'px' })
+Object.assign(document.getElementById('sb').style, { height: SB * scale + 'px', padding: `0 ${32 * scale}px`, fontSize: 16 * scale + 'px' })
+Object.assign(document.getElementById('island').style, { top: 11 * scale + 'px', width: 124 * scale + 'px', height: 36 * scale + 'px' })
+const f = document.getElementById('app')
+Object.assign(f.style, { top: SB * scale + 'px', width: DW + 'px', height: DH - SB + 'px', transform: `scale(${scale})` })
+f.src = '/?demo=' + (q.get('demo') || 'home')
+</script></body></html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF3D8B"/>
+      <stop offset="0.55" stop-color="#B026FF"/>
+      <stop offset="1" stop-color="#5B2CFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.3" cy="0.2" r="0.8">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="232" fill="url(#glow)"/>
+  <!-- J handle -->
+  <path d="M590 400 V640 a150 150 0 0 1 -300 0" fill="none" stroke="#fff" stroke-width="120" stroke-linecap="round"/>
+  <!-- gavel head -->
+  <g transform="rotate(-14 590 330)">
+    <rect x="400" y="250" width="380" height="160" rx="48" fill="#fff"/>
+    <rect x="460" y="250" width="34" height="160" fill="#B026FF" opacity="0.9"/>
+    <rect x="686" y="250" width="34" height="160" fill="#B026FF" opacity="0.9"/>
+  </g>
+  <!-- sparkles -->
+  <path d="M250 240 Q262 302 324 314 Q262 326 250 388 Q238 326 176 314 Q238 302 250 240Z" fill="#D7FF3A"/>
+  <path d="M790 640 Q798 682 840 690 Q798 698 790 740 Q782 698 740 690 Q782 682 790 640Z" fill="#D7FF3A"/>
+</svg>

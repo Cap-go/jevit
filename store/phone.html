@@ -1,0 +1,8 @@
+<!doctype html>
+<!-- Dev only: /store/phone.html?demo=receipts&w=375&h=667 renders the app at an exact phone size. -->
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}iframe{border:0;display:block}</style></head>
+<body><iframe id="f"></iframe><script>
+const q = new URLSearchParams(location.search), f = document.getElementById('f')
+f.width = q.get('w') || 375; f.height = q.get('h') || 667
+f.src = '/?demo=' + (q.get('demo') || 'home')
+</script></body></html>

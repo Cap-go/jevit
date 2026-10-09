@@ -1,0 +1,36 @@
+// Store-screenshot demo states. Only active in mock builds: /?demo=home|ask|judging|verdict|green|report|share|welcome
+import { caseFile, newId } from './store'
+import { toEvidenceImage } from './images'
+import { CapacitorPersistentAccount } from '@capgo/capacitor-persistent-account'
+
+export const demo: string | null =
+  import.meta.env.VITE_MOCK === '1' ? new URLSearchParams(location.search).get('demo') : null
+
+const ROUTES: Record<string, string> = {
+  welcome: '/welcome',
+  home: '/',
+  ask: '/case/question',
+  receipts: '/case/receipts',
+  slots: '/case/receipts',
+  context: '/case/context',
+  judging: '/verdict',
+  verdict: '/verdict',
+  green: '/verdict',
+  report: '/verdict',
+  share: '/verdict',
+}
+
+export async function setupDemo(): Promise<void> {
+  if (!demo) return
+  // Headless screenshots freeze time: render every animation at its final state.
+  document.documentElement.classList.add('demo')
+  if (demo === 'welcome') localStorage.removeItem('jevit.onboarded')
+  else localStorage.setItem('jevit.onboarded', '1')
+  await CapacitorPersistentAccount.saveAccount({ data: { token: 'mock', user: { provider: 'apple', name: 'Sam' } } })
+  if (demo !== 'home' && demo !== 'welcome' && demo !== 'receipts') {
+    const img = await toEvidenceImage('/store/demo-chat.png')
+    caseFile.evidence = [{ id: newId(), kind: 'image', ...img }]
+    caseFile.question = demo === 'green' || demo === 'share' ? 'Who’s right, me or him?' : 'Is he cheating?'
+  }
+  history.replaceState({}, '', ROUTES[demo] ?? '/')
+}

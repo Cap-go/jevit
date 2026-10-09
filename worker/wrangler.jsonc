@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jevit-judge",
+  "account_id": "9ee3d7479a3c359681e3fab2c8cb22c0",
+  "main": "src/index.ts",
+  // Public home: pages (/privacy, /terms, /support, /get) + API (/v1/*)
+  "routes": [
+    { "pattern": "jevit.fun", "custom_domain": true },
+    { "pattern": "www.jevit.fun", "custom_domain": true }
+  ],
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  // Workers AI: Clef decision models (@cf/cloudflare/clef, @cf/cloudflare/clef-flash)
+  "ai": { "binding": "AI" },
+  // Per-account daily verdict quota + ban flag
+  "durable_objects": { "bindings": [{ "name": "QUOTA", "class_name": "Quota" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Quota"] }],
+  "vars": {
+    "DAILY_VERDICTS": "15",
+    // Comma-separated accepted `aud` values for provider ID tokens.
+    // Google: iOS client id + web client id (Android uses the web client id).
+    "GOOGLE_CLIENT_IDS": "885497139376-0cuab877sg5ersufq1hfldtr1lc0thpp.apps.googleusercontent.com,885497139376-p9i7sq4ni7pnnt96dj8tquugnm8kgf9q.apps.googleusercontent.com",
+    // Apple: iOS bundle id (ee.forgr.jevit) + Services ID used by Sign in with Apple on Android.
+    "APPLE_CLIENT_IDS": "ee.forgr.jevit",
+    // Optional: AI Gateway id for logs/analytics/caching. Leave "" to call Workers AI directly.
+    "AI_GATEWAY_ID": "",
+    // Store links used by the /get smart link (filled once the listings are live)
+    "APP_STORE_URL": "",
+    "PLAY_STORE_URL": ""
+  },
+  "ratelimits": [
+    // sign-in attempts per IP
+    { "name": "AUTH_LIMITER", "namespace_id": "4200", "simple": { "limit": 10, "period": 60 } },
+    // verdicts per account (burst); daily cap lives in the Quota Durable Object
+    { "name": "JUDGE_LIMITER", "namespace_id": "4201", "simple": { "limit": 4, "period": 60 } },
+    // live question checks per account while typing
+    { "name": "CHECK_LIMITER", "namespace_id": "4202", "simple": { "limit": 40, "period": 60 } }
+  ]
+  // Secrets: wrangler secret put SESSION_SECRET (32+ random chars), optional ADMIN_TOKEN
+}

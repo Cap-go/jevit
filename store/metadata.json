@@ -1,0 +1,26 @@
+{
+  "appId": "ee.forgr.jevit",
+  "locale": "en-US",
+  "urls": {
+    "support": "https://jevit.fun/support",
+    "marketing": "https://jevit.fun",
+    "privacy": "https://jevit.fun/privacy",
+    "terms": "https://jevit.fun/terms"
+  },
+  "ios": {
+    "name": "Jevit: AI Judge for Chats",
+    "subtitle": "Get your texts judged by AI",
+    "primaryCategory": "ENTERTAINMENT",
+    "secondaryCategory": "LIFESTYLE",
+    "keywords": "judge,texts,red flag,relationship,cheating,verdict,toxic,dating,screenshot,crush,advice,boyfriend",
+    "promotionalText": "Is he cheating? Am I wrong? Is she into me? Drop the receipts and JEV-1 bangs the gavel in seconds.",
+    "copyright": "2026 Digital Shift OÜ",
+    "reviewNotes": "Demo account (no social login needed): on the sign-in screen tap 'Reviewer or tester? Sign in with email' and use the demo credentials provided in the review form. Sign in with Apple also works. Then tap 'Start a case', add a screenshot or paste a chat (example: 'Me: you said 7pm / Him: stop nagging me'), ask 'Am I wrong here?' and tap JUDGE IT. Verdicts are computed by Cloudflare Workers AI (Clef decision model). Uploaded content is not stored. Account deletion: Account → Delete account."
+  },
+  "android": {
+    "title": "Jevit: AI Judge for Chats",
+    "shortDescription": "Drop the receipts, ask the question, get an AI verdict on your chats in seconds.",
+    "category": "ENTERTAINMENT"
+  },
+  "description": "Got receipts? JEV-1 has opinions.\n\nJevit is the AI judge for your conversations. Upload a screenshot of the chat (or paste the messages), ask the question that keeps you up at night, and get a clear verdict in seconds, with a gavel slam.\n\nASK ANYTHING JUDGEABLE\n• Is he cheating?\n• Am I wrong here?\n• Is she into me?\n• Who’s right, me or them?\n• How toxic is this?\n\nJevit checks your question live and turns it into the right kind of decision: yes or no, who’s right, or a rating.\n\nA REAL VERDICT, NOT AN ESSAY\nJEV-1 runs about 20 checks on every case and gives you:\n• A big verdict stamp: YES, NOPE, YOU WIN, BOTH WRONG…\n• A confidence score, honest when the evidence is thin\n• Red flags and green flags it found, with percentages\n• A vibe report: their interest, toxicity, who’s putting in the effort\n• One line of real, kind advice\n\nSHARE THE VERDICT\nTurn any verdict into a story-ready card and send it to the group chat in one tap.\n\nPRIVATE BY DESIGN\nYour screenshots are processed for one verdict and never stored. No ads, no tracking, no selling data. Sign in with Apple or Google only keeps the court fair with a fresh batch of verdicts every day.\n\nSAFETY FIRST\nIf a conversation shows threats, control, or abuse, JEV-1 drops the jokes and points you to real help.\n\nJevit is for entertainment. Verdicts come from an AI decision model, can be wrong, and are not psychological, relationship, or legal advice.\n\nPrivacy: https://jevit.fun/privacy\nTerms: https://jevit.fun/terms"
+}
