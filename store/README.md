@@ -11,7 +11,7 @@ Everything for App Store + Google Play: metadata, screenshots, graphics, and the
 | `frame.html`, `feature.html`, `shots.ts` | Regenerate screenshots: `VITE_MOCK=1 bunx vite` then `bun store/shots.ts` |
 | `apple.ts` | Fills the App Store listing + uploads screenshots (App Store Connect API) |
 | `play.ts` | Fills the Play listing + graphics + uploads the AAB to internal (draft) |
-| `swap-ios-build.ts` | Puts a newer build on the iOS version waiting for review and resubmits it |
+| `swap-ios-build.ts` | Puts a newer build on the iOS version waiting for review and resubmits it (`--metadata` also re-pushes the listing) |
 
 Public pages served by the worker: [privacy](https://jevit.fun/privacy) · [terms](https://jevit.fun/terms) · [support](https://jevit.fun/support) · [smart link](https://jevit.fun)
 

@@ -25,7 +25,6 @@ export default function Deliberation({
   slamming: boolean
 }) {
   const [line, setLine] = useState(0)
-  const [caseNo] = useState(() => 1000 + Math.floor(Math.random() * 9000))
 
   useEffect(() => {
     const t = setInterval(() => setLine((l) => Math.min(l + 1, LINES.length - 1)), 1500)
@@ -36,7 +35,6 @@ export default function Deliberation({
 
   return (
     <div className={`deliberation ${slamming ? 'slamming' : ''}`}>
-      <p className="case-no">CASE #{caseNo}</p>
       <h2 className="judging-title">
         Jevit is judging<span className="dots"><i>.</i><i>.</i><i>.</i></span>
       </h2>

@@ -93,7 +93,6 @@ export default function Question() {
         <div className={`check-pill state-${check.state}`} key={check.hint}>
           <span>{check.state === 'ok' ? '✓' : check.state === 'weak' ? '!' : '?'}</span>
           {check.hint}
-          {confirmed && <em className="clef-badge">clef ✓</em>}
           {check.state === 'weak' && (
             <button className="fix-btn" onClick={() => setQ(check.suggestion)}>
               Try “{check.suggestion}”

@@ -1,5 +1,7 @@
 // Put a newer build on the iOS version that is waiting for review, then resubmit it.
-// Usage: ASC_KEY_ID=… ASC_ISSUER_ID=… bun store/swap-ios-build.ts <buildNumber>
+// With --metadata, also re-pushes store/metadata.json + screenshots (store/apple.ts) while the version is editable.
+// Usage: ASC_KEY_ID=… ASC_ISSUER_ID=… bun store/swap-ios-build.ts <buildNumber> [--metadata]
+import { $ } from 'bun'
 import { api, must } from './asc'
 
 const APP = '6820318157'
@@ -38,6 +40,8 @@ while (true) {
   if (Date.now() > DEADLINE) throw new Error(`Version still ${s}`)
   await Bun.sleep(10_000)
 }
+
+if (process.argv.includes('--metadata')) await $`bun store/apple.ts`
 
 // 3. Attach the new build.
 await must('PATCH', `/v1/appStoreVersions/${version.id}/relationships/build`, { data: { type: 'builds', id: build.id } })

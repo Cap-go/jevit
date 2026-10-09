@@ -71,7 +71,7 @@ const green: Verdict = {
   verdict_label: 'YOU WIN 🏆',
   confidence: 86,
   vibe: 'green',
-  headline: 'The chat backs you up. Case closed.',
+  headline: 'The chat backs you up. You win.',
   reasoning:
     'Jevit ran 20 checks on your chat. You asked a fair question and got deflection back. Strongest signals: blame-shifting (88%) and dodging (81%).',
   breakdown: [

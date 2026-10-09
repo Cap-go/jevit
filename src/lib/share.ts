@@ -113,7 +113,7 @@ export async function renderVerdictCard(v: Verdict, question: string): Promise<B
   ctx.font = `700 40px ${FONT}`
   ctx.fillStyle = 'rgba(255,246,251,0.7)'
   ctx.textAlign = 'left'
-  ctx.fillText('Confidence', 140, my)
+  ctx.fillText('How sure', 140, my)
   ctx.textAlign = 'right'
   ctx.fillStyle = '#fff'
   ctx.font = `800 52px ${FONT}`

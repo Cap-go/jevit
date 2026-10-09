@@ -94,7 +94,7 @@ export default function VerdictPage() {
 
   return (
     <Page
-      title={phase.name === 'reveal' ? 'The verdict' : 'In session'}
+      title={phase.name === 'reveal' ? 'The verdict' : 'Judging…'}
       back="/case/context"
       className={`verdict-page fill ${phase.name === 'slam' ? 'shake' : ''}`}
       footer={
@@ -106,7 +106,7 @@ export default function VerdictPage() {
               </button>
             )}
             <button className="btn grow" onClick={newCase}>
-              New case ⚖️
+              New chat ⚖️
             </button>
           </div>
         ) : undefined

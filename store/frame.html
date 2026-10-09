@@ -30,7 +30,8 @@ const cap = document.querySelector('.cap'), t = document.getElementById('t'), s 
 t.style.fontSize = W * 0.083 + 'px'; s.style.fontSize = W * 0.038 + 'px'; cap.style.top = H * 0.045 + 'px'
 // Phone sized to fill the space under the caption, bleeding slightly off the bottom.
 const DW = 390, DH = 844, SB = 47
-const phoneTop = H * 0.175
+// Start the phone under the caption so long subtitles never overlap it.
+const phoneTop = Math.max(H * 0.175, cap.offsetTop + cap.offsetHeight + H * 0.025)
 const scale = Math.min((W * 0.78) / DW, (H - phoneTop - H * 0.035) / DH)
 const bezel = 14 * scale
 const pw = DW * scale + bezel * 2, ph = DH * scale + bezel * 2

@@ -127,11 +127,18 @@ for (const fileName of readdirSync(dir).filter((f) => f.endsWith('.png')).sort()
 
 // --- App Review details ---
 const review = (await api('GET', `/v1/appStoreVersions/${version.id}/appStoreReviewDetail`)).data?.data
+// Demo account for App Review, read from outside the repo (email=… / password=… lines).
+const demoFile = Bun.file(`${process.env.HOME}/.jevit/review-account`)
+const demo = Object.fromEntries(
+  ((await demoFile.exists()) ? await demoFile.text() : '').split('\n').filter((l) => l.includes('=')).map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]),
+)
 const reviewAttrs: Record<string, unknown> = {
   contactFirstName: 'Martin',
   contactLastName: 'Donadieu',
   contactEmail: 'support@capgo.app',
-  demoAccountRequired: false,
+  ...(demo.email && demo.password
+    ? { demoAccountRequired: true, demoAccountName: demo.email, demoAccountPassword: demo.password }
+    : { demoAccountRequired: false }),
   notes: meta.ios.reviewNotes,
   ...(contactPhone ? { contactPhone } : {}),
 }

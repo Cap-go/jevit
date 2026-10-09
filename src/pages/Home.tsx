@@ -47,7 +47,7 @@ export default function Home() {
       footer={
         <div className="home-footer">
           <button className="cta" onClick={() => start()}>
-            Start a case ⚖️
+            Judge a chat ⚖️
           </button>
           <button className="link-btn muted-link" onClick={() => (tap(), shareApp())}>
             Invite a friend to get judged 💌
@@ -88,7 +88,7 @@ export default function Home() {
       </div>
 
       <div className="quick">
-        <p className="section-label">Quick case</p>
+        <p className="section-label">Quick questions</p>
         <div className="quick-grid">
           {STARTER_QUESTIONS.slice(0, 4).map((q) => (
             <button key={q} className="chip" onClick={() => start(q)}>
