@@ -3,6 +3,8 @@
   "name": "jevit-judge",
   "account_id": "9ee3d7479a3c359681e3fab2c8cb22c0",
   "main": "src/index.ts",
+  // Landing page media (video, screenshots, badges, font). Files are served directly; everything else runs the worker.
+  "assets": { "directory": "./public" },
   // Public home: pages (/privacy, /terms, /support, /get) + API (/v1/*)
   "routes": [
     { "pattern": "jevit.fun", "custom_domain": true },

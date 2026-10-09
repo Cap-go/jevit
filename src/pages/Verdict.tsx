@@ -8,14 +8,14 @@ import Stamp from '../components/Stamp'
 import ShareSheet from '../components/ShareSheet'
 import { requestVerdict, JudgeFailure, AuthRequired, QuotaExceeded } from '../lib/api'
 import { resetsIn } from '../lib/time'
-import { demo } from '../lib/demo'
+import { demo, still } from '../lib/demo'
 import { caseFile } from '../lib/store'
 import { buzz, tap, thud } from '../lib/haptics'
 import type { Verdict } from '../lib/types'
 import { tr } from '../lib/i18n'
 
-const MIN_SUSPENSE_MS = demo ? 0 : 4200
-const SLAM_MS = demo ? 0 : 650
+const MIN_SUSPENSE_MS = still ? 0 : 4200
+const SLAM_MS = still ? 0 : 650
 
 type Phase =
   | { name: 'judging' }
@@ -27,7 +27,7 @@ type Phase =
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 function celebrate(v: Verdict) {
-  if (v.safety_concern || !v.question_ok || demo) return
+  if (v.safety_concern || !v.question_ok || still) return
   const emoji = v.vibe === 'green' ? '💚' : v.vibe === 'red' ? '🚩' : '🤔'
   const shape = confetti.shapeFromText({ text: emoji, scalar: 3 })
   // flat: no 3D tumble, otherwise the emoji flip edge-on like spinning coins.
@@ -170,9 +170,9 @@ function Objection({ verdict, onPick }: { verdict: Verdict; onPick: (q: string) 
 }
 
 function useCountUp(target: number, ms = 1100) {
-  const [n, setN] = useState(demo ? target : 0)
+  const [n, setN] = useState(still ? target : 0)
   useEffect(() => {
-    if (demo) return
+    if (still) return
     const start = performance.now()
     let raf = 0
     const step = (t: number) => {

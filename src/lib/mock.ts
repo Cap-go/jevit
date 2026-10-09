@@ -1,6 +1,6 @@
 import { checkQuestion } from './questionCheck'
 import type { RemoteCheck, Verdict } from './types'
-import { demo } from './demo'
+import { demo, still } from './demo'
 
 // UI-only fakes: run `VITE_MOCK=1 bun run dev` to work on animations without the worker.
 export async function mockCheck(question: string): Promise<RemoteCheck> {
@@ -14,7 +14,7 @@ export async function mockCheck(question: string): Promise<RemoteCheck> {
 export async function mockVerdict(question: string): Promise<Verdict> {
   if (demo === 'judging') await new Promise(() => {}) // freeze on the deliberation screen
   if (demo === 'green' || demo === 'share') return green
-  await new Promise((r) => setTimeout(r, demo ? 0 : 1500))
+  await new Promise((r) => setTimeout(r, still ? 0 : 1500))
   if (!/\?$/.test(question.trim())) {
     return {
       ...base,

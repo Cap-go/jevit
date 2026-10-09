@@ -3,6 +3,7 @@ import { MAX_CLEF_IMAGES, type ClefImage } from "./clef";
 import { invalid, judge } from "./judge";
 import { checkQuestion, type QuestionKind } from "./questionCheck";
 import type { Quota, QuotaStatus } from "./quota";
+import { localize, pageLang } from "./localize";
 import { publicPage } from "./pages";
 
 export { Quota } from "./quota";
@@ -200,7 +201,7 @@ async function handleSelftest(request: Request, env: Env, origin: string | null)
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const origin = request.headers.get("origin");
     const url = new URL(request.url);
     const route = `${request.method} ${url.pathname}`;
@@ -208,9 +209,10 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(origin) });
     if (request.method === "GET") {
       const page = publicPage(request, env);
-      if (page) return page;
+      const lang = page && pageLang(request);
+      if (page) return lang && env.I18N ? await localize(page, lang, env.I18N, ctx) : page;
     }
-    if (route === "GET /health") return json({ ok: true, judge: "JEV-1", engine: "clef" }, 200, origin);
+    if (route === "GET /health") return json({ ok: true, engine: "clef" }, 200, origin);
 
     try {
       if (route === "POST /v1/auth") return await handleAuth(request, env, origin);

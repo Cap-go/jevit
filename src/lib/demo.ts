@@ -5,6 +5,8 @@ import { CapacitorPersistentAccount } from '@capgo/capacitor-persistent-account'
 
 export const demo: string | null =
   import.meta.env.VITE_MOCK === '1' ? new URLSearchParams(location.search).get('demo') : null
+// &video=1 (promo recordings): real timing and animations. Otherwise screenshots: everything frozen at its end state.
+export const still = demo !== null && !new URLSearchParams(location.search).has('video')
 
 const ROUTES: Record<string, string> = {
   welcome: '/welcome',
@@ -23,7 +25,7 @@ const ROUTES: Record<string, string> = {
 export async function setupDemo(): Promise<void> {
   if (!demo) return
   // Headless screenshots freeze time: render every animation at its final state.
-  document.documentElement.classList.add('demo')
+  if (still) document.documentElement.classList.add('demo')
   if (demo === 'welcome') localStorage.removeItem('jevit.onboarded')
   else localStorage.setItem('jevit.onboarded', '1')
   await CapacitorPersistentAccount.saveAccount({ data: { token: 'mock', user: { provider: 'apple', name: 'Sam' } } })

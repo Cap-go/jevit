@@ -1,0 +1,252 @@
+<!doctype html>
+<!-- Promo video (dev only), recorded by scripts/promo-video.ts. Real app footage (mock mode) in a phone,
+     with animated captions. /store/promo.html?store=1 drops the non-app intro (App Store previews must be app footage). -->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/node_modules/@fontsource-variable/bricolage-grotesque/index.css">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:100vw;height:100vh;overflow:hidden;background:#14051f;font-family:'Bricolage Grotesque Variable',system-ui;color:#fff}
+.bg{position:absolute;inset:-20%;background:radial-gradient(40% 30% at 20% 15%,#ff3d8b77,transparent),radial-gradient(45% 30% at 85% 45%,#5b2cff88,transparent),radial-gradient(40% 30% at 30% 90%,#b026ff66,transparent),#14051f;animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(4%,-3%) rotate(4deg) scale(1.06)}}
+.cap{position:absolute;left:0;right:0;text-align:center;padding:0 7vw;z-index:5}
+.t{font-weight:800;letter-spacing:-.035em;line-height:1.02}
+.t em{font-style:normal;color:#d7ff3a}
+.s{margin-top:.55em;color:rgba(255,246,251,.75);font-weight:600}
+.w{display:inline-block;opacity:0;transform:translateY(.45em) scale(.9);filter:blur(6px);transition:all .42s cubic-bezier(.2,1.2,.3,1)}
+.w.in{opacity:1;transform:none;filter:none}
+.cap.out{transition:all .3s ease-in;opacity:0;transform:translateY(-.6em)}
+.phone{position:absolute;left:50%;background:#0b0b0f;box-shadow:0 0 0 3px #2a2a33,0 60px 140px rgba(0,0,0,.65),0 0 120px #b026ff33;transition:transform .9s cubic-bezier(.2,1,.3,1),opacity .6s;z-index:3}
+.screen{position:absolute;overflow:hidden;background:#14051f}
+.sb{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-family:-apple-system,system-ui;color:#fff;z-index:2}
+.island{position:absolute;left:50%;transform:translateX(-50%);background:#000;border-radius:999px;z-index:3}
+iframe{border:0;position:absolute;left:0;transform-origin:0 0;background:#14051f;opacity:0;transition:opacity .35s}
+iframe.on{opacity:1}
+/* intro chat (website version) */
+.chat{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:.5em;z-index:4;font-family:-apple-system,system-ui;transition:all .6s cubic-bezier(.5,0,.2,1)}
+.b{max-width:78%;padding:.55em .9em;border-radius:1.1em;line-height:1.25;opacity:0;transform:scale(.6) translateY(.6em);transition:all .35s cubic-bezier(.2,1.4,.3,1)}
+.b.in{opacity:1;transform:none}
+.them{align-self:flex-start;background:#2a2a30;border-bottom-left-radius:.3em}
+.me{align-self:flex-end;background:#0a84ff;border-bottom-right-radius:.3em}
+.chat.gone{opacity:0;transform:translateX(-50%) scale(.6) translateY(30%);filter:blur(8px)}
+/* end card */
+.end{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;z-index:6;opacity:0;pointer-events:none}
+.end img{width:26vw;border-radius:22%;box-shadow:0 30px 90px #ff3d8b55;transform:scale(.4) rotate(-12deg);opacity:0;transition:all .7s cubic-bezier(.2,1.5,.3,1)}
+.end .wm{font-size:15vw;font-weight:800;letter-spacing:-.05em;background:linear-gradient(90deg,#ffd1e8,#fff 40%,#d7ff3a);-webkit-background-clip:text;color:transparent}
+.end .tag{font-size:6vw;font-weight:800;color:#d7ff3a;margin-top:-.4em}
+.end .pill{margin-top:1.4em;font-size:3.6vw;font-weight:700;padding:.7em 1.4em;border-radius:999px;background:linear-gradient(90deg,#ff3d8b,#5b2cff);box-shadow:0 20px 60px #ff3d8b44}
+.end.on{opacity:1;transition:opacity .5s}
+.end.on img{transform:none;opacity:1}
+.end .r{opacity:0;transform:translateY(.5em);transition:all .5s cubic-bezier(.2,1.3,.3,1)}
+.end.on .r{opacity:1;transform:none}
+.end.on .r1{transition-delay:.25s}.end.on .r2{transition-delay:.45s}.end.on .r3{transition-delay:.75s}
+.ripple{position:absolute;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;background:#ffffff55;border:3px solid #fff;z-index:9;animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{from{transform:scale(.3);opacity:1}to{transform:scale(1.4);opacity:0}}
+</style></head><body>
+<div class="bg"></div>
+<div class="cap" id="cap"><div class="t" id="t"></div><div class="s" id="s"></div></div>
+<div class="chat" id="chat"></div>
+<div class="phone" id="phone"><div class="screen" id="screen">
+  <div class="sb" id="sb"><span>9:41</span><span><svg height="0.75em" viewBox="0 0 54 14" fill="#fff"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/><path d="M28 4.5a10 10 0 0 1 13 0l-1.6 1.7a7.6 7.6 0 0 0-9.8 0zM30.6 7.4a6 6 0 0 1 7.8 0l-1.7 1.7a3.6 3.6 0 0 0-4.4 0zM34.5 13l2-2.2a1.3 1.3 0 0 0-4 0z"/><rect x="45" y="2" width="9" height="10" rx="2.5" fill="none" stroke="#fff" stroke-width="1.2" opacity=".5"/><rect x="46.5" y="3.5" width="6" height="7" rx="1.5"/></svg></span></div>
+  <div class="island" id="island"></div>
+</div></div>
+<div class="end" id="end">
+  <img src="/logo.svg" alt="">
+  <div class="wm r r1">jevit</div>
+  <div class="tag r r2">get judged.</div>
+  <div class="pill r r3">Free on iPhone &amp; Android</div>
+</div>
+<script>
+const q = new URLSearchParams(location.search)
+const STORE = q.has('store')
+const W = innerWidth, H = innerHeight
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+window.__marks = []
+const mark = (name) => window.__marks.push({ name, t: performance.now() - window.__t0 })
+
+// ---- layout (same proportions as the store screenshots) ----
+const cap = document.getElementById('cap'), t = document.getElementById('t'), s = document.getElementById('s')
+t.style.fontSize = Math.min(W, 1000) * 0.095 + 'px'; s.style.fontSize = Math.min(W, 1000) * 0.042 + 'px'; cap.style.top = H * 0.05 + 'px'
+const DW = 390, DH = 844, SB = 47
+const phoneTop = H * 0.2
+const scale = Math.min((W * 0.74) / DW, (H - phoneTop - H * 0.03) / DH)
+const bezel = 14 * scale
+const pw = DW * scale + bezel * 2, ph = DH * scale + bezel * 2
+const phone = document.getElementById('phone')
+Object.assign(phone.style, { width: pw + 'px', height: ph + 'px', top: phoneTop + 'px', marginLeft: -pw / 2 + 'px', borderRadius: 62 * scale + 'px' })
+const screen = document.getElementById('screen')
+Object.assign(screen.style, { left: bezel + 'px', top: bezel + 'px', width: DW * scale + 'px', height: DH * scale + 'px', borderRadius: 50 * scale + 'px' })
+Object.assign(document.getElementById('sb').style, { height: SB * scale + 'px', padding: `0 ${32 * scale}px`, fontSize: 16 * scale + 'px' })
+Object.assign(document.getElementById('island').style, { top: 11 * scale + 'px', width: 124 * scale + 'px', height: 36 * scale + 'px' })
+
+function frame(demo) {
+  const f = document.createElement('iframe')
+  Object.assign(f.style, { top: SB * scale + 'px', width: DW + 'px', height: DH - SB + 'px', transform: `scale(${scale})` })
+  f.src = `/?demo=${demo}&video=1`
+  screen.appendChild(f)
+  return new Promise((r) => (f.onload = () => setTimeout(() => r(f), 1500)))
+}
+const show = (f) => {
+  for (const x of screen.querySelectorAll('iframe')) x.classList.toggle('on', x === f)
+}
+
+// ---- captions: words pop in one by one ----
+async function caption(title, sub = '') {
+  if (t.innerHTML) {
+    cap.classList.add('out')
+    await sleep(300)
+  }
+  cap.classList.remove('out')
+  const words = (html) => html.split(/(<em>.*?<\/em>|<br>|\s+)/).filter((x) => x && !/^\s+$/.test(x))
+    .map((x) => (x === '<br>' ? '<br>' : `<span class="w">${x}</span> `)).join('')
+  t.innerHTML = words(title)
+  s.innerHTML = sub ? words(sub) : ''
+  const all = [...cap.querySelectorAll('.w')]
+  for (const [i, w] of all.entries()) setTimeout(() => w.classList.add('in'), 40 + i * 90)
+}
+
+// Tap feedback at a point inside the app (app CSS pixels).
+function tapAt(f, el) {
+  const r = el.getBoundingClientRect(), pr = phone.getBoundingClientRect()
+  const d = document.createElement('div')
+  d.className = 'ripple'
+  d.style.left = pr.left + bezel + (r.left + r.width / 2) * scale + 'px'
+  d.style.top = pr.top + bezel + SB * scale + (r.top + r.height / 2) * scale + 'px'
+  document.body.appendChild(d)
+  setTimeout(() => d.remove(), 700)
+}
+
+async function typeInto(f, text) {
+  const ta = f.contentDocument.querySelector('textarea')
+  const set = Object.getOwnPropertyDescriptor(f.contentWindow.HTMLTextAreaElement.prototype, 'value').set
+  const put = (v) => (set.call(ta, v), ta.dispatchEvent(new f.contentWindow.Event('input', { bubbles: true })))
+  put('')
+  await sleep(250)
+  for (let i = 1; i <= text.length; i++) {
+    put(text.slice(0, i))
+    await sleep(55 + Math.random() * 40)
+  }
+}
+
+const CHAT = [
+  ['them', 'sorry babe, phone died 😅'],
+  ['me', 'you were online at 2am tho'],
+  ['them', 'ur being crazy 🙄'],
+  ['me', 'who is Mia? 👀'],
+]
+
+async function intro() {
+  phone.style.transform = `translateY(${H}px)`
+  const chat = document.getElementById('chat')
+  chat.style.top = H * 0.36 + 'px'
+  chat.style.width = W * 0.8 + 'px'
+  chat.style.fontSize = W * 0.05 + 'px'
+  chat.innerHTML = CHAT.map(([who, txt]) => `<div class="b ${who}">${txt}</div>`).join('')
+  await caption('Who’s <em>right?</em>')
+  const bubbles = [...chat.children]
+  for (const b of bubbles) {
+    await sleep(420)
+    b.classList.add('in')
+    mark('pop')
+  }
+  await sleep(700)
+  await caption('Ask the <em>AI.</em>')
+  await sleep(500)
+  chat.classList.add('gone')
+  await sleep(250)
+  phone.style.transform = 'none'
+  mark('whoosh')
+  await sleep(700)
+}
+
+async function play() {
+  window.__t0 = performance.now()
+  if (STORE) {
+    phone.style.transform = 'none'
+    show(frames.home)
+    await caption('Your chats. <em>Judged.</em>', 'Who’s right? Ask the AI.')
+    await sleep(3000)
+  } else {
+    show(frames.home)
+    await intro()
+    await sleep(1500)
+  }
+
+  // 1. Upload: tap the empty drop zone, the screenshot lands in a slot
+  show(frames.receipts)
+  mark('whoosh')
+  await caption('Upload the <em>chat</em> 📸', 'A screenshot is enough')
+  await sleep(900)
+  const drop = frames.receipts.contentDocument.querySelector('.dropzone')
+  if (drop) tapAt(frames.receipts, drop)
+  mark('tap')
+  await sleep(350)
+  show(frames.slots)
+  mark('pop')
+  await sleep(1900)
+
+  // 2. Ask
+  show(frames.ask)
+  mark('whoosh')
+  await caption('Ask a <em>question</em>', 'Is he into me? Who’s right?')
+  await sleep(500)
+  await typeInto(frames.ask, 'Who’s right, me or him?')
+  await sleep(500)
+  const next = [...frames.ask.contentDocument.querySelectorAll('button')].find((b) => /next/i.test(b.textContent))
+  if (next) tapAt(frames.ask, next)
+  mark('tap')
+  await sleep(400)
+
+  // 3. Judging → verdict (live: deliberation, gavel slam, stamp)
+  const verdictReady = frame('green')
+  const v = await verdictReady
+  show(v)
+  mark('whoosh')
+  await caption('The AI reads <em>every</em> message')
+  // Wait for the stamp, then name the moment.
+  const doc = v.contentDocument
+  while (!doc.querySelector('.stamp')) await sleep(30)
+  mark('slam')
+  await sleep(250)
+  await caption('Get the <em>answer.</em>', 'And how sure it is')
+  await sleep(3200)
+
+  // 4. Swipe to the vibe report
+  const track = doc.querySelector('.report-track')
+  await caption('Red flags. <em>Green flags.</em>', 'Interest, toxicity, effort')
+  if (track) {
+    track.scrollTo({ left: track.clientWidth, behavior: 'smooth' })
+    await sleep(1100)
+    track.scrollTo({ left: track.clientWidth * 2, behavior: 'smooth' })
+  }
+  await sleep(2300)
+
+  // 5. Share
+  const share = [...doc.querySelectorAll('button')].find((b) => /share/i.test(b.textContent))
+  if (share) {
+    tapAt(v, share)
+    mark('tap')
+    await sleep(250)
+    share.click()
+  }
+  await caption('Share it with <em>friends</em>', 'One tap')
+  await sleep(2600)
+
+  // 6. End card
+  cap.classList.add('out')
+  phone.style.transform = `translateY(${H * 0.15}px) scale(.85)`
+  phone.style.opacity = '0'
+  await sleep(350)
+  document.getElementById('end').classList.add('on')
+  mark('end')
+  await sleep(3200)
+  window.__done = true
+}
+
+const frames = {}
+Promise.all(['home', 'receipts', 'slots', 'ask'].map((d) => frame(d).then((f) => (frames[d] = f)))).then(async () => {
+  await document.fonts.ready
+  window.__ready = true
+  window.__play = play
+  if (q.has('autoplay')) play()
+})
+</script></body></html>
