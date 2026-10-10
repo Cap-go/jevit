@@ -1,24 +1,25 @@
 // Records store/promo.html (real app footage in mock mode) into an MP4 with headless Chrome + ffmpeg.
 // Needs the mock dev server: VITE_MOCK=1 bunx vite --port 5173
-// Usage: bun scripts/promo-video.ts web|store [--audio music.m4a]
-//   web   → 1080×1920, with the chat intro (website, socials)
-//   store → 886×1920, app footage only (App Store app preview, 6.9" iPhone)
+// Usage: bun scripts/promo-video.ts web|store|youtube [--audio music.m4a]
+//   web     → 1080×1920, with the chat intro (website, socials)
+//   store   → 886×1920, app footage only (App Store app preview, 6.9" iPhone)
+//   youtube → 1920×1080, with the chat intro (YouTube, Google Play promo video)
 import { $ } from 'bun'
 import { mkdirSync, rmSync } from 'node:fs'
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const APP = process.env.APP_URL ?? 'http://localhost:5173'
-const kind = process.argv[2] === 'store' ? 'store' : 'web'
+const kind = ['store', 'youtube'].includes(process.argv[2]) ? process.argv[2] : 'web'
 const audioArg = process.argv.indexOf('--audio')
 const audio = audioArg > 0 ? process.argv[audioArg + 1] : undefined
-const [W, H] = kind === 'store' ? [886, 1920] : [1080, 1920]
+const [W, H] = kind === 'store' ? [886, 1920] : kind === 'youtube' ? [1920, 1080] : [1080, 1920]
 const OUT_DIR = 'store/video'
 const FRAMES = `/tmp/jevit-promo-${kind}`
 rmSync(FRAMES, { recursive: true, force: true })
 mkdirSync(FRAMES, { recursive: true })
 mkdirSync(OUT_DIR, { recursive: true })
 
-const port = 9420 + (kind === 'store' ? 1 : 0)
+const port = 9420 + ['web', 'store', 'youtube'].indexOf(kind)
 const chrome = Bun.spawn(
   [CHROME, '--headless=new', `--user-data-dir=/tmp/jevit-promo-chrome-${kind}`, `--remote-debugging-port=${port}`, `--window-size=${W},${H}`,
     '--force-device-scale-factor=1', '--hide-scrollbars', '--autoplay-policy=no-user-gesture-required', 'about:blank'],

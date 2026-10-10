@@ -40,6 +40,8 @@ await call('PUT', `${E}/listings/${LANG}`, {
   title: meta.android.title,
   shortDescription: meta.android.shortDescription,
   fullDescription: meta.description,
+  // Promo video: a YouTube watch URL (embeddable, no ads). Rendered by `bun scripts/promo-video.ts youtube`.
+  ...(meta.android.promoVideo ? { video: meta.android.promoVideo } : {}),
 })
 console.log('✓ listing text')
 
