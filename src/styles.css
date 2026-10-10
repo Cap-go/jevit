@@ -18,6 +18,11 @@
      report env() as 0 under edge-to-edge, so the plugin values are the source of truth there. */
   --safe-top: max(var(--cap-native-navigation-top, 0px), env(safe-area-inset-top, 0px));
   --safe-bottom: max(var(--cap-native-navigation-bottom, 0px), env(safe-area-inset-bottom, 0px));
+  /* Side insets: landscape notch, and the iPhone Duo status rail (84pt on the trailing edge). */
+  --safe-left: max(var(--cap-native-navigation-left, 0px), env(safe-area-inset-left, 0px));
+  --safe-right: max(var(--cap-native-navigation-right, 0px), env(safe-area-inset-right, 0px));
+  /* Content column on wide screens (iPhone Duo unfolded, iPad, landscape). */
+  --column: 560px;
 }
 
 * {
@@ -2397,4 +2402,57 @@ html.i18n-loading body {
 }
 html.i18n-rtl :is(p, h1, h2, h3, h4, li, label, button, a, .muted) {
   unicode-bidi: plaintext;
+}
+
+/* ---------- wide screens and side insets (iPhone Duo, landscape) ---------- */
+.page,
+.footer,
+.toolbar {
+  padding-left: calc(var(--safe-left) + 20px);
+  padding-right: calc(var(--safe-right) + 20px);
+}
+.toolbar {
+  padding-left: calc(var(--safe-left) + 12px);
+  padding-right: calc(var(--safe-right) + 12px);
+}
+.sheet {
+  padding-left: calc(var(--safe-left) + 20px);
+  padding-right: calc(var(--safe-right) + 20px);
+}
+.account-btn {
+  right: calc(var(--safe-right) + 16px);
+}
+
+@media (min-width: 640px) {
+  /* One centered column instead of a stretched phone layout. */
+  .page > *,
+  .footer > * {
+    width: 100%;
+    max-width: var(--column);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .page > .blob,
+  .page > .flash {
+    max-width: none;
+  }
+  /* Full-bleed strips on phones (negative margins) stay inside the column here. */
+  .page > .marquee {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sheet-backdrop {
+    justify-content: center;
+    align-items: center;
+  }
+  .sheet {
+    max-width: var(--column);
+    border-radius: 28px;
+    padding-bottom: 20px;
+  }
 }

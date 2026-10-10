@@ -1,7 +1,7 @@
 // Store-screenshot demo states. Only active in mock builds: /?demo=home|ask|judging|verdict|green|report|share|welcome, or a path (/?demo=/how)
 import { caseFile, newId } from './store'
 import { toEvidenceImage } from './images'
-import { CapacitorPersistentAccount } from '@capgo/capacitor-persistent-account'
+import { mockSession } from './auth'
 
 export const demo: string | null =
   import.meta.env.VITE_MOCK === '1' ? new URLSearchParams(location.search).get('demo') : null
@@ -28,7 +28,7 @@ export async function setupDemo(): Promise<void> {
   if (still) document.documentElement.classList.add('demo')
   if (demo === 'welcome') localStorage.removeItem('jevit.onboarded')
   else localStorage.setItem('jevit.onboarded', '1')
-  await CapacitorPersistentAccount.saveAccount({ data: { token: 'mock', user: { provider: 'apple', name: 'Sam' } } })
+  await mockSession('Sam')
   if (demo !== 'home' && demo !== 'welcome' && demo !== 'receipts') {
     const img = await toEvidenceImage('/store/demo-chat.png')
     caseFile.evidence = [{ id: newId(), kind: 'image', ...img }]

@@ -72,6 +72,9 @@ async function save(data: SessionData | null) {
   await PersistentAccount.saveAccount({ data }).catch(() => {})
 }
 
+/** Mock builds only (demo screens): a signed-in session that survives a missing keychain. */
+export const mockSession = (name: string) => save({ token: 'mock', user: { provider: 'apple', name } })
+
 export async function signIn(provider: Provider): Promise<{ session: SessionData; quota: Quota }> {
   if (MOCK) {
     const s: SessionData = { token: 'mock', user: { provider, name: 'Mock' } }

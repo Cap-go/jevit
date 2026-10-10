@@ -1,4 +1,4 @@
-// Fills the App Store listing for ee.forgr.jevit from store/metadata.json + store/screenshots/ios-6.9.
+// Fills the App Store listing for ee.forgr.jevit from store/metadata.json + store/screenshots/{ios-6.9,ios-duo}.
 // Idempotent: safe to re-run. Usage: ASC_KEY_ID=… ASC_ISSUER_ID=… bun store/apple.ts [--contact-phone +33…]
 import { createHash } from 'node:crypto'
 import { readdirSync } from 'node:fs'
@@ -92,37 +92,42 @@ else
   ).data
 console.log('✓ version', version.attributes.versionString, 'description/keywords/urls')
 
-// --- Screenshots (6.9" set; Apple scales it for smaller iPhones) ---
-const DISPLAY = 'APP_IPHONE_67'
+// --- Screenshots ---
+// 6.9" set (Apple scales it for smaller iPhones) and the iPhone Duo set (outer 1398×2034 + inner 2853×2007 in one set).
+const SCREENSHOT_SETS = [
+  ['APP_IPHONE_67', 'store/screenshots/ios-6.9'],
+  ['APP_IPHONE_DUO', 'store/screenshots/ios-duo'],
+] as const
 const sets = (await must('GET', `/v1/appStoreVersionLocalizations/${vLoc.id}/appScreenshotSets`)).data
-let set = sets.find((s: any) => s.attributes.screenshotDisplayType === DISPLAY)
-if (set) {
-  // Replace existing shots so re-runs stay in sync with the files.
-  const old = (await must('GET', `/v1/appScreenshotSets/${set.id}/appScreenshots`)).data
-  for (const s of old) await must('DELETE', `/v1/appScreenshots/${s.id}`)
-} else {
-  set = (
-    await must('POST', '/v1/appScreenshotSets', {
-      data: { type: 'appScreenshotSets', attributes: { screenshotDisplayType: DISPLAY }, relationships: { appStoreVersionLocalization: { data: { type: 'appStoreVersionLocalizations', id: vLoc.id } } } },
-    })
-  ).data
-}
-const dir = 'store/screenshots/ios-6.9'
-for (const fileName of readdirSync(dir).filter((f) => f.endsWith('.png')).sort()) {
-  const bytes = new Uint8Array(await Bun.file(`${dir}/${fileName}`).arrayBuffer())
-  const shot = (
-    await must('POST', '/v1/appScreenshots', {
-      data: { type: 'appScreenshots', attributes: { fileName, fileSize: bytes.length }, relationships: { appScreenshotSet: { data: { type: 'appScreenshotSets', id: set.id } } } },
-    })
-  ).data
-  for (const op of shot.attributes.uploadOperations) {
-    const headers = Object.fromEntries(op.requestHeaders.map((h: any) => [h.name, h.value]))
-    const res = await fetch(op.url, { method: op.method, headers, body: bytes.slice(op.offset, op.offset + op.length) })
-    if (!res.ok) throw new Error(`upload ${fileName} part failed ${res.status}`)
+for (const [DISPLAY, dir] of SCREENSHOT_SETS) {
+  let set = sets.find((s: any) => s.attributes.screenshotDisplayType === DISPLAY)
+  if (set) {
+    // Replace existing shots so re-runs stay in sync with the files.
+    const old = (await must('GET', `/v1/appScreenshotSets/${set.id}/appScreenshots`)).data
+    for (const s of old) await must('DELETE', `/v1/appScreenshots/${s.id}`)
+  } else {
+    set = (
+      await must('POST', '/v1/appScreenshotSets', {
+        data: { type: 'appScreenshotSets', attributes: { screenshotDisplayType: DISPLAY }, relationships: { appStoreVersionLocalization: { data: { type: 'appStoreVersionLocalizations', id: vLoc.id } } } },
+      })
+    ).data
   }
-  const md5 = createHash('md5').update(bytes).digest('hex')
-  await must('PATCH', `/v1/appScreenshots/${shot.id}`, { data: { type: 'appScreenshots', id: shot.id, attributes: { uploaded: true, sourceFileChecksum: md5 } } })
-  console.log('✓ screenshot', fileName)
+  for (const fileName of readdirSync(dir).filter((f) => f.endsWith('.png')).sort()) {
+    const bytes = new Uint8Array(await Bun.file(`${dir}/${fileName}`).arrayBuffer())
+    const shot = (
+      await must('POST', '/v1/appScreenshots', {
+        data: { type: 'appScreenshots', attributes: { fileName, fileSize: bytes.length }, relationships: { appScreenshotSet: { data: { type: 'appScreenshotSets', id: set.id } } } },
+      })
+    ).data
+    for (const op of shot.attributes.uploadOperations) {
+      const headers = Object.fromEntries(op.requestHeaders.map((h: any) => [h.name, h.value]))
+      const res = await fetch(op.url, { method: op.method, headers, body: bytes.slice(op.offset, op.offset + op.length) })
+      if (!res.ok) throw new Error(`upload ${fileName} part failed ${res.status}`)
+    }
+    const md5 = createHash('md5').update(bytes).digest('hex')
+    await must('PATCH', `/v1/appScreenshots/${shot.id}`, { data: { type: 'appScreenshots', id: shot.id, attributes: { uploaded: true, sourceFileChecksum: md5 } } })
+    console.log(`✓ screenshot ${DISPLAY}`, fileName)
+  }
 }
 
 // --- App Review details ---
