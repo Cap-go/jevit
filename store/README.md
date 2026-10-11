@@ -16,6 +16,19 @@ Everything for App Store + Google Play: metadata, screenshots, graphics, and the
 
 Public pages served by the worker: [privacy](https://jevit.fun/privacy) · [terms](https://jevit.fun/terms) · [support](https://jevit.fun/support) · [smart link](https://jevit.fun)
 
+## Local iOS build (when Capgo Build has no machine with the needed Xcode)
+
+iPhone Duo needs the iOS 27.1 SDK (Xcode 27.1+) for the app to fill both displays. Bump `CURRENT_PROJECT_VERSION`, then:
+
+```bash
+bun run build && bunx cap sync ios
+K=(-allowProvisioningUpdates -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8 -authenticationKeyID $ASC_KEY_ID -authenticationKeyIssuerID $ASC_ISSUER_ID)
+xcodebuild archive -project ios/App/App.xcodeproj -scheme App -configuration Release -destination generic/platform=iOS -archivePath /tmp/jevit-build/App.xcarchive DEVELOPMENT_TEAM=UVTJ336J2D $K
+xcodebuild -exportArchive -archivePath /tmp/jevit-build/App.xcarchive -exportPath /tmp/jevit-build/export -exportOptionsPlist store/ios/ExportOptions.plist $K
+xcrun altool --upload-app -f /tmp/jevit-build/export/App.ipa -t ios --apiKey $ASC_KEY_ID --apiIssuer $ASC_ISSUER_ID
+bun store/swap-ios-build.ts <build>   # if a version is already waiting for review
+```
+
 ## One-time steps that have no API
 
 ### 1. App Store Connect: create the app
