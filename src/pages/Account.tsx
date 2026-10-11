@@ -14,6 +14,13 @@ export default function Account() {
   const [me, setMe] = useState<{ user: SessionData['user']; quota: Quota } | null>(null)
   const [error, setError] = useState('')
 
+  // The intro is a root screen: it ends on Home, like the first launch.
+  const replayIntro = () => {
+    void tap()
+    setNavigation('root', 'forward')
+    navigate('/welcome', { replace: true })
+  }
+
   const leave = useCallback(() => {
     setNavigation('root', 'forward')
     navigate('/', { replace: true })
@@ -73,6 +80,9 @@ export default function Account() {
 
       <button className="btn wide" onClick={() => (tap(), shareApp())}>
         Invite friends 💌
+      </button>
+      <button className="btn ghost wide tight" onClick={replayIntro}>
+        Replay the intro 👋
       </button>
       <button className="btn ghost wide tight" onClick={logout}>
         Sign out
