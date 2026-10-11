@@ -11,6 +11,7 @@ import { getSession, warmUpAuth } from './lib/auth'
 import { setupDemo } from './lib/demo'
 import { setupChrome } from './lib/chrome'
 import { setupI18n } from './lib/i18n'
+import { setupExternalLinks } from './lib/external'
 
 async function nativeBoot() {
   if (!Capacitor.isNativePlatform()) return
@@ -24,6 +25,7 @@ void nativeBoot().catch(() => undefined)
 
 initTransitions({ platform: 'auto' })
 await setupI18n().catch(() => undefined)
+setupExternalLinks()
 await setupChrome().catch(() => undefined)
 warmUpAuth()
 void getSession()
