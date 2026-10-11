@@ -1,19 +1,33 @@
 import { LogoMark } from './Logo'
-import { APP_VERSION, useLiveBundle } from '../lib/version'
+import { useVersionLabel } from '../lib/version'
+
+const AUTHOR_URL = 'https://x.com/martindonadieu'
+const SOURCE_URL = 'https://github.com/Cap-go/jevit'
+const CAPGO_URL = 'https://capgo.app/?ref=jevit'
 
 export default function AppCredits() {
-  const bundle = useLiveBundle()
+  const version = useVersionLabel()
   return (
     <div className="credits">
-      <LogoMark size={44} />
+      <LogoMark size={84} />
       <p className="credits-version">
-        {`Jevit ${APP_VERSION}`}
-        {bundle && <span> · {bundle}</span>}
+        Version <span translate="no">{version}</span>
       </p>
-      <p className="credits-note">Built with Capacitor and shipped with Capgo live updates.</p>
-      <a className="made-with" href="https://capgo.app/?ref=jevit" target="_blank" rel="noreferrer">
+      <p className="credits-author">
+        Made by{' '}
+        <a href={AUTHOR_URL} target="_blank" rel="noreferrer" translate="no">
+          Martin Donadieu
+        </a>
+      </p>
+      <p className="credits-note">
+        <a href={SOURCE_URL} target="_blank" rel="noreferrer">
+          Open source
+        </a>
+        , built with Capacitor and shipped with Capgo live updates.
+      </p>
+      <a className="made-with" href={CAPGO_URL} target="_blank" rel="noreferrer">
         <img src="/capgo.svg" alt="" />
-        Made with Capgo
+        <span translate="no">Made with Capgo</span>
       </a>
     </div>
   )

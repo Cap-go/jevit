@@ -2336,44 +2336,59 @@ cap-page[style*='visibility: hidden'] * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  margin: 22px 0 6px;
+  gap: 6px;
+  margin: 34px 0 10px;
   text-align: center;
 }
-.credits-version {
-  margin: 8px 0 0;
-  font-size: 14px;
-  font-weight: 700;
+.credits .logo-mark {
+  filter: drop-shadow(0 14px 30px rgba(176, 38, 255, 0.35));
+}
+.credits p {
+  margin: 0;
   user-select: text;
   -webkit-user-select: text;
 }
-.credits-version span,
-.credits-note {
-  opacity: 0.45;
+.credits-version {
+  margin-top: 14px !important;
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--muted);
+}
+.credits-author {
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--muted);
+}
+.credits a:not(.made-with) {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-underline-offset: 3px;
 }
 .credits-note {
-  margin: 0;
-  max-width: 260px;
-  font-size: 12.5px;
-  line-height: 1.45;
+  max-width: 300px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  opacity: 0.85;
 }
 .made-with {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 6px 16px 6px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+  margin-top: 16px;
+  padding: 7px 22px 7px 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 13.5px;
-  font-weight: 600;
+  background: rgba(255, 246, 251, 0.88);
+  color: #14051f;
+  font-size: 17px;
+  font-weight: 750;
   text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 .made-with img {
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
 }
 

@@ -3,17 +3,21 @@ import { Capacitor } from '@capacitor/core'
 
 declare const __APP_VERSION__: string
 
+/** Version of this web bundle (package.json at build time). */
 export const APP_VERSION = __APP_VERSION__
 
-// Live Capgo bundle, when it differs from the version this JS was built as (same as BeWise).
-export function useLiveBundle(): string {
-  const [bundle, setBundle] = useState('')
+/** "1.0 · 1.0.15": store (native) version, then the Capgo live bundle actually running. */
+export function useVersionLabel(): string {
+  const [label, setLabel] = useState(APP_VERSION)
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
-    void import('@capgo/capacitor-updater')
-      .then(({ CapacitorUpdater }) => CapacitorUpdater.current())
-      .then(({ bundle: current }) => setBundle(['builtin', APP_VERSION].includes(current.version) ? '' : current.version))
-      .catch(() => {})
+    void Promise.all([
+      import('@capacitor/app').then(({ App }) => App.getInfo()).then((i) => i.version).catch(() => ''),
+      import('@capgo/capacitor-updater')
+        .then(({ CapacitorUpdater }) => CapacitorUpdater.current())
+        .then(({ bundle }) => (bundle.version === 'builtin' ? APP_VERSION : bundle.version))
+        .catch(() => APP_VERSION),
+    ]).then(([native, bundle]) => setLabel(native ? `${native} · ${bundle}` : bundle))
   }, [])
-  return bundle
+  return label
 }
