@@ -68,11 +68,12 @@ const FAQ = [
 
 const SHOTS = [
   ["01-home", "Your chats. Judged."],
-  ["02-ask", "Upload the chat"],
-  ["03-judging", "The AI reads every message"],
-  ["04-verdict", "Get the answer"],
-  ["05-report", "Red flags. Green flags."],
-  ["06-share", "Share it with friends"],
+  ["02-upload", "Upload the chat"],
+  ["03-ask", "Ask a question"],
+  ["04-judging", "The AI reads every message"],
+  ["05-verdict", "Get the answer"],
+  ["06-report", "Red flags. Green flags."],
+  ["07-share", "Share it with friends"],
 ];
 
 function homePage(appStore: string, playStore: string) {

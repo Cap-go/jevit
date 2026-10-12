@@ -8,19 +8,19 @@
     "terms": "https://jevit.fun/terms"
   },
   "ios": {
-    "name": "Jevit: AI Judge for Chats",
-    "subtitle": "Get your texts judged by AI",
+    "name": "Jevit: Red Flag Chat Analyzer",
+    "subtitle": "Is he into me? AI text judge",
     "primaryCategory": "ENTERTAINMENT",
     "secondaryCategory": "LIFESTYLE",
-    "keywords": "judge,texts,red flag,relationship,cheating,verdict,toxic,dating,screenshot,crush,advice,boyfriend",
-    "promotionalText": "Is he cheating? Am I wrong? Is she into me? Upload a chat, ask a question, and get the answer in seconds.",
+    "keywords": "toxic,rizz,dating,crush,cheating,boyfriend,girlfriend,relationship,love,screenshot,gaslight,flirt",
+    "promotionalText": "Free AI judge for your chats: upload a screenshot, ask “Is he into me?” or “Who’s right?”, and get a clear answer with red and green flags. Private, no paywall.",
     "copyright": "2026 Digital Shift OÜ",
     "reviewNotes": "Demo account (no social login needed): on the sign-in screen tap 'Reviewer or tester? Sign in with email' and use the demo credentials provided in the review form. Sign in with Apple also works. Then tap 'Judge a chat', add a screenshot or paste a chat (example: 'Me: you said 7pm / Him: stop nagging me'), ask 'Am I wrong here?' and tap JUDGE IT. Answers are computed by Cloudflare Workers AI (Clef model). Uploaded content is not stored. Account deletion: Account → Delete account."
   },
   "android": {
-    "title": "Jevit: AI Judge for Chats",
-    "shortDescription": "Upload a chat, ask a question, get an AI answer in seconds.",
+    "title": "Jevit: Red Flag Chat Analyzer",
+    "shortDescription": "AI chat analyzer: upload a screenshot, spot red flags and see who’s right.",
     "category": "ENTERTAINMENT"
   },
-  "description": "Who’s right? Ask the AI.\n\nJevit is an AI judge for your chats. Upload a screenshot of a chat (or paste the messages), ask your question, and get a clear answer in seconds.\n\nASK ANY QUESTION ABOUT THE CHAT\n• Is he cheating?\n• Am I wrong here?\n• Is she into me?\n• Who’s right, me or them?\n• How toxic is this?\n\nA CLEAR ANSWER, NOT AN ESSAY\nJevit checks about 20 things in every chat and gives you:\n• A big answer: YES, NOPE, YOU WIN, BOTH WRONG…\n• How sure it is (it tells you when there isn’t enough to go on)\n• The red flags and green flags it found\n• Their interest, how toxic it is, and who puts in more effort\n• One short piece of advice\n\nSHARE IT\nTurn any answer into a card and send it to your friends in one tap.\n\nPRIVATE\nYour screenshots are used for one answer and never stored. No ads, no tracking, no selling data. Sign in with Apple or Google so everyone gets free answers every day and bots stay out.\n\nSAFETY FIRST\nIf a chat shows threats, control, or abuse, Jevit stops joking and points you to real help.\n\nJevit is for fun. Answers come from AI, can be wrong, and are not psychological, relationship, or legal advice.\n\nPrivacy: https://jevit.fun/privacy\nTerms: https://jevit.fun/terms"
+  "description": "Is he into me? Am I wrong? Is this a red flag? Upload a screenshot of the chat and Jevit, the AI chat analyzer, gives you a clear answer in seconds.\n\nFree, private, and no paywall: you get free answers every day.\n\nHOW IT WORKS\n1. Upload the chat: a screenshot from any messaging or dating app, or paste the messages.\n2. Ask a question: “Is he cheating?”, “Is she into me?”, “Who’s right, me or them?”, “How toxic is this?”\n3. Get the answer: YES, NOPE, YOU WIN or BOTH WRONG, and how sure it is.\n\nA CLEAR ANSWER, NOT AN ESSAY\nJevit’s AI reads every message and checks about 20 things:\n• Red flags: low effort, mixed signals, blame-shifting, gaslighting, controlling behavior, love bombing\n• Green flags: affection, effort, respect, consistency, good banter\n• Their interest in you, how toxic the chat is, and who puts in more effort\n• One short piece of advice\n\nFOR DATING, CRUSHES AND ARGUMENTS\nDecode a crush’s texts, check a boyfriend or girlfriend chat, settle an argument with a friend, or get a second opinion before you reply.\n\nSHARE THE ANSWER\nTurn any answer into a story-ready card and send it to your friends in one tap.\n\nPRIVATE BY DESIGN\nYour screenshots are used for one answer and never stored. No ads, no tracking, no selling data. Sign in with Apple or Google keeps bots out.\n\nANY LANGUAGE\nJevit speaks your phone’s language, and you can ask in any language.\n\nSAFETY FIRST\nIf a chat shows threats, control, or abuse, Jevit stops joking and points you to real help.\n\nJevit is for fun. Answers come from AI, can be wrong, and are not psychological, relationship, or legal advice.\n\nPrivacy: https://jevit.fun/privacy\nTerms: https://jevit.fun/terms"
 }

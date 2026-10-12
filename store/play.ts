@@ -45,6 +45,20 @@ await call('PUT', `${E}/listings/${LANG}`, {
 })
 console.log('✓ listing text')
 
+// Other languages (store/localizations.json). Graphics fall back to the default language.
+const LOCALIZATIONS: Record<string, { play: string; name: string; shortDescription: string; description: string }> =
+  (await Bun.file('store/localizations.json').exists()) ? await Bun.file('store/localizations.json').json() : {}
+for (const l of Object.values(LOCALIZATIONS)) {
+  await call('PUT', `${E}/listings/${l.play}`, {
+    language: l.play,
+    title: l.name,
+    shortDescription: l.shortDescription,
+    fullDescription: l.description,
+    ...(meta.android.promoVideo ? { video: meta.android.promoVideo } : {}),
+  })
+}
+if (Object.keys(LOCALIZATIONS).length) console.log('✓ listings', Object.values(LOCALIZATIONS).map((l) => l.play).join(' '))
+
 async function images(type: string, files: string[]) {
   await call('DELETE', `${E}/listings/${LANG}/${type}`)
   for (const f of files) {

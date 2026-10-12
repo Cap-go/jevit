@@ -34,6 +34,19 @@ const infoAttrs = { name: meta.ios.name, subtitle: meta.ios.subtitle, privacyPol
 if (infoLoc) await must('PATCH', `/v1/appInfoLocalizations/${infoLoc.id}`, { data: { type: 'appInfoLocalizations', id: infoLoc.id, attributes: infoAttrs } })
 console.log('✓ app info + categories')
 
+// --- Other languages (store/localizations.json): each locale has its own name, subtitle, and keywords ---
+const LOCALIZATIONS: Record<string, { name: string; subtitle: string; keywords: string; promotionalText: string; description: string }> =
+  (await Bun.file('store/localizations.json').exists()) ? await Bun.file('store/localizations.json').json() : {}
+for (const [locale, l] of Object.entries(LOCALIZATIONS)) {
+  const attrs = { name: l.name, subtitle: l.subtitle, privacyPolicyUrl: meta.urls.privacy }
+  const existing = infoLocs.find((x: any) => x.attributes.locale === locale)
+  const r = existing
+    ? await api('PATCH', `/v1/appInfoLocalizations/${existing.id}`, { data: { type: 'appInfoLocalizations', id: existing.id, attributes: attrs } })
+    : await api('POST', '/v1/appInfoLocalizations', { data: { type: 'appInfoLocalizations', attributes: { locale, ...attrs }, relationships: { appInfo: { data: { type: 'appInfos', id: appInfo.id } } } } })
+  if (r.status >= 300) console.log(`! app info ${locale}`, r.status, JSON.stringify(r.data?.errors?.[0]?.detail))
+}
+if (Object.keys(LOCALIZATIONS).length) console.log('✓ app info', Object.keys(LOCALIZATIONS).join(' '))
+
 // --- Age rating: mild mature themes / crude humor (relationship drama), no other sensitive content ---
 const age = (await api('GET', `/v1/appInfos/${appInfo.id}/ageRatingDeclaration`)).data?.data
 if (age) {
@@ -91,6 +104,41 @@ else
     })
   ).data
 console.log('✓ version', version.attributes.versionString, 'description/keywords/urls')
+
+for (const [locale, l] of Object.entries(LOCALIZATIONS)) {
+  const attrs = { description: l.description, keywords: l.keywords, promotionalText: l.promotionalText, supportUrl: meta.urls.support, marketingUrl: meta.urls.marketing }
+  const existing = vLocs.find((x: any) => x.attributes.locale === locale)
+  const r = existing
+    ? await api('PATCH', `/v1/appStoreVersionLocalizations/${existing.id}`, { data: { type: 'appStoreVersionLocalizations', id: existing.id, attributes: attrs } })
+    : await api('POST', '/v1/appStoreVersionLocalizations', { data: { type: 'appStoreVersionLocalizations', attributes: { locale, ...attrs }, relationships: { appStoreVersion: { data: { type: 'appStoreVersions', id: version.id } } } } })
+  if (r.status >= 300) console.log(`! version ${locale}`, r.status, JSON.stringify(r.data?.errors?.[0]?.detail))
+}
+if (Object.keys(LOCALIZATIONS).length) console.log('✓ version text', Object.keys(LOCALIZATIONS).join(' '), '(screenshots fall back to English)')
+
+// --- App preview (6.9" iPhone): store/video/jevit-promo-store.mp4, 886×1920, 29s ---
+const PREVIEW = 'store/video/jevit-promo-store.mp4'
+if (await Bun.file(PREVIEW).exists()) {
+  const previewSets = (await must('GET', `/v1/appStoreVersionLocalizations/${vLoc.id}/appPreviewSets`)).data
+  let pSet = previewSets.find((s: any) => s.attributes.previewType === 'IPHONE_67')
+  if (pSet) {
+    for (const p of (await must('GET', `/v1/appPreviewSets/${pSet.id}/appPreviews`)).data) await must('DELETE', `/v1/appPreviews/${p.id}`)
+  } else {
+    pSet = (await must('POST', '/v1/appPreviewSets', { data: { type: 'appPreviewSets', attributes: { previewType: 'IPHONE_67' }, relationships: { appStoreVersionLocalization: { data: { type: 'appStoreVersionLocalizations', id: vLoc.id } } } } })).data
+  }
+  const bytes = new Uint8Array(await Bun.file(PREVIEW).arrayBuffer())
+  const preview = (
+    await must('POST', '/v1/appPreviews', {
+      data: { type: 'appPreviews', attributes: { fileName: 'jevit-preview.mp4', fileSize: bytes.length, mimeType: 'video/mp4', previewFrameTimeCode: '00:00:16:00' }, relationships: { appPreviewSet: { data: { type: 'appPreviewSets', id: pSet.id } } } },
+    })
+  ).data
+  for (const op of preview.attributes.uploadOperations) {
+    const headers = Object.fromEntries(op.requestHeaders.map((h: any) => [h.name, h.value]))
+    const res = await fetch(op.url, { method: op.method, headers, body: bytes.slice(op.offset, op.offset + op.length) })
+    if (!res.ok) throw new Error(`preview upload part failed ${res.status}`)
+  }
+  await must('PATCH', `/v1/appPreviews/${preview.id}`, { data: { type: 'appPreviews', id: preview.id, attributes: { uploaded: true, sourceFileChecksum: createHash('md5').update(bytes).digest('hex') } } })
+  console.log('✓ app preview IPHONE_67')
+}
 
 // --- Screenshots ---
 // 6.9" set (Apple scales it for smaller iPhones) and the iPhone Duo set (outer 1398×2034 + inner 2853×2007 in one set).

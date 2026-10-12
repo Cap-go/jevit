@@ -5,8 +5,9 @@ Everything for App Store + Google Play: metadata, screenshots, graphics, and the
 | Path | What |
 |---|---|
 | `metadata.json` | Names, subtitle, keywords, descriptions, URLs, review notes |
-| `screenshots/ios-6.9/` | 6 × 1320×2868 (App Store 6.9", scaled by Apple for smaller iPhones) |
-| `screenshots/android/` | 6 × 1080×1920 phone screenshots |
+| `localizations.json` | 11 more languages (name, subtitle, keywords, promo text, Play short + full description), pushed by `apple.ts` and `play.ts` |
+| `screenshots/ios-6.9/` | 7 × 1320×2868 (App Store 6.9", scaled by Apple for smaller iPhones) |
+| `screenshots/android/` | 7 × 1080×1920 phone screenshots |
 | `screenshots/ios-duo/` | iPhone Duo set (`APP_IPHONE_DUO`): 5 outer 1398×2034 + 5 inner 2853×2007. Regenerate: `bun store/shots-duo.ts` (frame: `frame-duo.html`) |
 | `graphics/` | Play feature graphic 1024×500, Play icon 512, App Store icon 1024 |
 | `frame.html`, `feature.html`, `shots.ts` | Regenerate screenshots: `VITE_MOCK=1 bunx vite` then `bun store/shots.ts` |

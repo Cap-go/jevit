@@ -9,18 +9,18 @@ const DIR = 'store/screenshots/ios-duo'
 
 // App Store Connect takes up to 10 screenshots per set: 5 per display.
 const OUTER = [
-  { id: '01-home', demo: 'home', t: 'Your chats.<br><em>Judged.</em>', s: 'Upload a chat, ask a question, get the answer.' },
-  { id: '02-ask', demo: 'ask', t: 'Ask a <em>question</em>', s: 'Is he into me? Who’s right?' },
-  { id: '03-verdict', demo: 'green', t: 'Get the <em>answer.</em>', s: 'A clear answer, and how sure it is.' },
-  { id: '04-report', demo: 'report', t: 'Red flags.<br><em>Green flags.</em>', s: 'Interest, toxicity, and effort.' },
-  { id: '05-share', demo: 'share', t: 'Share it with<br><em>friends</em>', s: 'One tap to share your answer.' },
+  { id: '01-home', demo: 'home', t: 'Your chats.<br><em>Judged.</em>', s: 'AI chat analyzer: red flags, crushes, who’s right.' },
+  { id: '02-ask', demo: 'ask', t: 'Ask a <em>question</em>', s: 'Is he into me? Is he cheating? Who’s right?' },
+  { id: '03-verdict', demo: 'green', t: 'Get the <em>answer.</em>', s: 'Is he into me? Who’s right? See how sure it is.' },
+  { id: '04-report', demo: 'report', t: 'Red flags.<br><em>Green flags.</em>', s: 'How toxic it is, their interest, and effort.' },
+  { id: '05-share', demo: 'share', t: 'Share it with<br><em>friends</em>', s: 'One tap to share it with your friends.' },
 ]
 const INNER = [
-  { id: '06-inner-home', demo: 'home', t: 'Your chats. <em>Judged.</em>', s: 'Upload a chat, ask a question, get the answer.' },
-  { id: '07-inner-upload', demo: 'slots', t: 'Upload the <em>chat</em>', s: 'Screenshots or pasted messages.' },
-  { id: '08-inner-judging', demo: 'judging', t: 'The AI reads <em>every</em> message', s: '20 checks on every chat, in seconds.' },
-  { id: '09-inner-verdict', demo: 'green', t: 'Get the <em>answer.</em>', s: 'A clear answer, and how sure it is.' },
-  { id: '10-inner-report', demo: 'report', t: 'Red flags. <em>Green flags.</em>', s: 'Interest, toxicity, and effort.' },
+  { id: '06-inner-home', demo: 'home', t: 'Your chats. <em>Judged.</em>', s: 'AI chat analyzer: red flags, crushes, who’s right.' },
+  { id: '07-inner-upload', demo: 'slots', t: 'Upload the <em>chat</em>', s: 'Any chat screenshot or pasted messages.' },
+  { id: '08-inner-judging', demo: 'judging', t: 'The AI reads <em>every</em> message', s: 'Red flags, green flags and interest, in seconds.' },
+  { id: '09-inner-verdict', demo: 'green', t: 'Get the <em>answer.</em>', s: 'Is he into me? Who’s right? See how sure it is.' },
+  { id: '10-inner-report', demo: 'report', t: 'Red flags. <em>Green flags.</em>', s: 'How toxic it is, their interest, and effort.' },
 ]
 
 mkdirSync(DIR, { recursive: true })
