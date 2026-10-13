@@ -13,6 +13,7 @@ const ROUTES: Record<string, string> = {
   home: '/',
   ask: '/case/question',
   receipts: '/case/receipts',
+  consent: '/case/receipts',
   slots: '/case/receipts',
   context: '/case/context',
   judging: '/verdict',
@@ -28,8 +29,10 @@ export async function setupDemo(): Promise<void> {
   if (still) document.documentElement.classList.add('demo')
   if (demo === 'welcome') localStorage.removeItem('jevit.onboarded')
   else localStorage.setItem('jevit.onboarded', '1')
+  if (demo === 'consent') localStorage.removeItem('jevit.ai-consent')
+  else localStorage.setItem('jevit.ai-consent', '1')
   await mockSession('Sam')
-  if (demo !== 'home' && demo !== 'welcome' && demo !== 'receipts') {
+  if (demo !== 'home' && demo !== 'welcome' && demo !== 'receipts' && demo !== 'consent') {
     const img = await toEvidenceImage('/store/demo-chat.png')
     caseFile.evidence = [{ id: newId(), kind: 'image', ...img }]
     caseFile.question = demo === 'green' || demo === 'share' ? 'Who’s right, me or him?' : 'Is he cheating?'

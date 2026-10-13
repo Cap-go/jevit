@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { setDirection } from '@capgo/capacitor-transitions/react'
 import CasePage from '../../components/CasePage'
 import { caseFile } from '../../lib/store'
+import { hasAIConsent } from '../../lib/consent'
 import { useQuota } from '../../lib/useQuota'
 import { CONTEXT_CHIPS } from '../../lib/examples'
 import { resetsIn } from '../../lib/time'
@@ -16,7 +17,7 @@ export default function Context() {
   const [context, setContextState] = useState(caseFile.context)
 
   useEffect(() => {
-    if (caseFile.evidence.length === 0) navigate('/case/receipts', { replace: true })
+    if (caseFile.evidence.length === 0 || !hasAIConsent()) navigate('/case/receipts', { replace: true })
     else if (!caseFile.question.trim()) navigate('/case/question', { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

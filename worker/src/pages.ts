@@ -1,7 +1,7 @@
 // Public pages required by the App Store / Play Store listings, plus the /get smart link used in shares.
 
 const CONTACT = "support@capgo.app";
-const UPDATED = "October 8, 2026";
+const UPDATED = "October 13, 2026";
 
 const layout = (title: string, body: string) => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -22,7 +22,12 @@ const PRIVACY = layout(
   `<h1>Privacy Policy</h1><p class="muted">Last updated ${UPDATED}</p>
 <p>Jevit ("we") is an entertainment app where an AI judge gives a verdict on conversations you upload. This policy explains what we process and why.</p>
 <h2>What you upload</h2>
-<p>Screenshots, photos, and text you add to a case are sent over an encrypted connection to our server, which forwards them to Cloudflare Workers AI (the Clef decision model) to compute one verdict. <b>We do not store your screenshots, messages, questions, or verdicts.</b> They exist only in memory for the few seconds needed to answer. Cloudflare does not use them to train models.</p>
+<p>Screenshots, photos, and text you add to a case are sent over an encrypted connection to our server, which forwards them to Cloudflare Workers AI to compute one verdict. <b>We do not store your screenshots, messages, questions, or verdicts.</b> They exist only in memory for the few seconds needed to answer. Cloudflare does not use them to train models.</p>
+<h2>Third-party AI and your consent</h2>
+<p>Before your first case, the app asks your permission to share this content with third-party AI. Nothing is sent until you agree. With your permission:</p>
+<ul><li><b>Clef</b>, an AI decision model by Cloudflare, running on Cloudflare Workers AI, reads your screenshots, pasted messages, question, and extra details to write the verdict.</li>
+<li><b>Gemma</b>, an AI model by Google, running on Cloudflare Workers AI, translates your question, extra details, and the verdict when your device is not set to English. App and website text is translated the same way.</li></ul>
+<p>The content is used only to answer you. You can turn AI data sharing off anytime in Account → AI data sharing; the app then sends nothing and asks again before your next case. Screenshots can contain other people’s names and messages: only add content you have the right to share.</p>
 <h2>Your account</h2>
 <p>You sign in with Apple or Google so we can prevent abuse. We verify the sign-in token and keep only a salted, one-way hash of your account identifier together with a daily verdict counter. We do not store your email address, name, contacts, or profile photo. If your provider shares your first name, it lives only in your session on your device for the greeting; we never store it.</p>
 <h2>On your device</h2>

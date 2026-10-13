@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { setNavigation } from '@capgo/capacitor-transitions/react'
+import { setDirection, setNavigation } from '@capgo/capacitor-transitions/react'
 import confetti from 'canvas-confetti'
 import Page from '../components/Page'
 import Deliberation from '../components/Deliberation'
 import Stamp from '../components/Stamp'
 import ShareSheet from '../components/ShareSheet'
-import { requestVerdict, JudgeFailure, AuthRequired, QuotaExceeded } from '../lib/api'
+import { requestVerdict, JudgeFailure, AuthRequired, QuotaExceeded, ConsentRequired } from '../lib/api'
 import { resetsIn } from '../lib/time'
 import { demo, still } from '../lib/demo'
 import { caseFile } from '../lib/store'
@@ -64,6 +64,11 @@ export default function VerdictPage() {
         if (err instanceof AuthRequired) {
           setNavigation('root', 'forward')
           navigate('/login?next=/case/receipts', { replace: true })
+          return
+        }
+        if (err instanceof ConsentRequired) {
+          setDirection('back')
+          navigate('/case/receipts', { replace: true })
           return
         }
         if (err instanceof QuotaExceeded) {

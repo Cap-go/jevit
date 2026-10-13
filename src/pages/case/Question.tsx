@@ -6,6 +6,7 @@ import IdeasSheet from '../../components/IdeasSheet'
 import { checkQuestion, STARTER_QUESTIONS } from '../../lib/questionCheck'
 import { AuthRequired, checkQuestionRemote } from '../../lib/api'
 import { caseFile } from '../../lib/store'
+import { hasAIConsent } from '../../lib/consent'
 import { useQuota } from '../../lib/useQuota'
 import { tap } from '../../lib/haptics'
 import type { RemoteCheck } from '../../lib/types'
@@ -20,7 +21,7 @@ export default function Question() {
   const [remote, setRemote] = useState<{ q: string; check: RemoteCheck } | null>(null)
 
   useEffect(() => {
-    if (caseFile.evidence.length === 0) navigate('/case/receipts', { replace: true })
+    if (caseFile.evidence.length === 0 || !hasAIConsent()) navigate('/case/receipts', { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -3,6 +3,7 @@ import { fitForClef } from './images'
 import { currentToken, getSession, signOut, type Quota, type SessionData } from './auth'
 import type { RemoteCheck, Verdict } from './types'
 import { lang, prime } from './i18n'
+import { hasAIConsent } from './consent'
 
 const JUDGE_URL = import.meta.env.VITE_JUDGE_URL ?? 'http://localhost:8787'
 const MOCK = import.meta.env.VITE_MOCK === '1'
@@ -11,6 +12,12 @@ export class JudgeFailure extends Error {}
 /** No valid session: send the user to /login. */
 export class AuthRequired extends JudgeFailure {}
 /** Daily verdicts used up. */
+/** The user hasn't agreed (or took back) sending chats to the AI. */
+export class ConsentRequired extends JudgeFailure {}
+const requireConsent = () => {
+  if (!hasAIConsent()) throw new ConsentRequired('Allow AI data sharing to get an answer')
+}
+
 export class QuotaExceeded extends JudgeFailure {
   constructor(message: string, readonly quota: Quota) {
     super(message)
@@ -62,11 +69,13 @@ export async function deleteAccount(): Promise<void> {
 
 // Clef-flash classifies the question as the user types.
 export async function checkQuestionRemote(question: string, signal?: AbortSignal): Promise<RemoteCheck> {
+  requireConsent()
   if (MOCK) return (await import('./mock')).mockCheck(question)
   return (await call<{ check: RemoteCheck }>('POST', '/v1/check', { question, lang }, signal)).check
 }
 
 export async function requestVerdict(question: string, signal?: AbortSignal): Promise<Verdict> {
+  requireConsent()
   if (MOCK) {
     const verdict = await (await import('./mock')).mockVerdict(question)
     await prime(textsOf(verdict))

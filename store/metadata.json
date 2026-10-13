@@ -15,7 +15,7 @@
     "keywords": "toxic,rizz,dating,crush,cheating,boyfriend,girlfriend,relationship,love,screenshot,gaslight,flirt",
     "promotionalText": "Free AI judge for your chats: upload a screenshot, ask “Is he into me?” or “Who’s right?”, and get a clear answer with red and green flags. Private, no paywall.",
     "copyright": "2026 Digital Shift OÜ",
-    "reviewNotes": "Demo account (no social login needed): on the sign-in screen tap 'Reviewer or tester? Sign in with email' and use the demo credentials provided in the review form. Sign in with Apple also works. Then tap 'Judge a chat', add a screenshot or paste a chat (example: 'Me: you said 7pm / Him: stop nagging me'), ask 'Am I wrong here?' and tap JUDGE IT. Answers are computed by Cloudflare Workers AI (Clef model). Uploaded content is not stored. Account deletion: Account → Delete account."
+    "reviewNotes": "Demo account (no social login needed): on the sign-in screen tap 'Reviewer or tester? Sign in with email' and use the demo credentials provided in the review form. Sign in with Apple also works. Then tap 'Judge a chat': before anything is sent, a consent sheet names the third-party AI (Clef by Cloudflare, and Gemma by Google for translation, both on Cloudflare Workers AI) and what is shared; tap 'I agree, continue' ('Not now' sends nothing). It can be turned off anytime in Account → AI data sharing. Then add a screenshot or paste a chat (example: 'Me: you said 7pm / Him: stop nagging me'), ask 'Am I wrong here?' and tap JUDGE IT. Answers are computed by Cloudflare Workers AI (Clef model). Uploaded content is not stored. Account deletion: Account → Delete account."
   },
   "android": {
     "title": "Jevit: Red Flag Chat Analyzer",

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import { setDirection } from '@capgo/capacitor-transitions/react'
 import CasePage from '../../components/CasePage'
 import Sheet from '../../components/Sheet'
+import AIConsentSheet from '../../components/AIConsentSheet'
+import { hasAIConsent } from '../../lib/consent'
 import { caseFile, newId } from '../../lib/store'
 import { toEvidenceImage } from '../../lib/images'
 import { useQuota } from '../../lib/useQuota'
@@ -24,6 +26,8 @@ export default function Receipts() {
   const [error, setError] = useState('')
   const [sheet, setSheet] = useState<'paste' | 'tips' | null>(null)
   const [draft, setDraft] = useState('')
+  // Nothing is sent before the user says yes; this screen is the entry to every case.
+  const [askConsent, setAskConsent] = useState(!hasAIConsent())
   const gallery = useRef<HTMLInputElement>(null)
   const camera = useRef<HTMLInputElement>(null)
 
@@ -177,6 +181,16 @@ export default function Receipts() {
 
       <input ref={gallery} type="file" accept="image/*" multiple hidden onChange={(e) => onFiles(e.target.files)} />
       <input ref={camera} type="file" accept="image/*" capture="environment" hidden onChange={(e) => onFiles(e.target.files)} />
+
+      {askConsent && (
+        <AIConsentSheet
+          onAgree={() => setAskConsent(false)}
+          onDecline={() => {
+            setDirection('back')
+            navigate('/', { replace: true })
+          }}
+        />
+      )}
 
       {sheet === 'paste' && (
         <Sheet title="Paste the chat 💬" onClose={() => setSheet(null)}>

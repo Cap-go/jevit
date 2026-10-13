@@ -8,11 +8,19 @@ import { tap } from '../lib/haptics'
 import { resetsIn } from '../lib/time'
 import { shareApp } from '../lib/share'
 import AppCredits from '../components/AppCredits'
+import { hasAIConsent, setAIConsent } from '../lib/consent'
 
 export default function Account() {
   const navigate = useNavigate()
   const [me, setMe] = useState<{ user: SessionData['user']; quota: Quota } | null>(null)
   const [error, setError] = useState('')
+  const [aiOn, setAiOn] = useState(hasAIConsent)
+
+  const toggleAI = () => {
+    void tap()
+    setAIConsent(!aiOn)
+    setAiOn(!aiOn)
+  }
 
   // The intro is a root screen: it ends on Home, like the first launch.
   const replayIntro = () => {
@@ -77,6 +85,18 @@ export default function Account() {
         </div>
       )}
       {error && <p className="error-text">{error}</p>}
+
+      <div className="card ai-card">
+        <div className="ai-row">
+          <h3>🔒 AI data sharing</h3>
+          <button className={`switch ${aiOn ? 'on' : ''}`} role="switch" aria-checked={aiOn} aria-label="AI data sharing" onClick={toggleAI} />
+        </div>
+        <p className="muted">
+          {aiOn
+            ? 'On. Your screenshots, messages and questions are sent to Cloudflare Workers AI (Clef by Cloudflare, and Gemma by Google for translation) only to answer you.'
+            : 'Off. Nothing is sent. Jevit will ask you again before your next case.'}
+        </p>
+      </div>
 
       <button className="btn wide" onClick={() => (tap(), shareApp())}>
         Invite friends 💌
